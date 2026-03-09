@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAMWELLPOS.MVVM.Views.Admin.User_Management"
+             Title="User_Management"
+             BackgroundColor="{StaticResource AppBackgroundColor}">
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="16, 24, 16, 0">
+
+        <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Margin="0,0,0,24">
+            <Image Source="samwelllogo.png" WidthRequest="160" Aspect="AspectFit" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*, Auto" ColumnSpacing="12" Margin="0,0,0,20">
+            <Border Grid.Column="0" Style="{StaticResource InputContainerStyle}" Padding="16, 4" Margin="0">
+                <Grid ColumnDefinitions="*, Auto">
+                    <Entry Grid.Column="0" Placeholder="Search users..." Style="{StaticResource InputEntryStyle}" />
+                    <Label Grid.Column="1" Text="🔍" VerticalOptions="Center" TextColor="{StaticResource TextLightColor}" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource PillBorderStyle}" BackgroundColor="{StaticResource LoginColor}" Padding="16, 0">
+                <Label Text="+ Add" Style="{StaticResource PillLabelStyle}" TextColor="{StaticResource WhiteColor}" />
+            </Border>
+        </Grid>
+
+        <ScrollView Grid.Row="2" VerticalScrollBarVisibility="Never">
+
+            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="12" RowSpacing="12" Padding="0,0,0,24" VerticalOptions="Start">
+
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource ProductCardStyle}" VerticalOptions="Start">
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0, 8">
+
+                        <Border WidthRequest="50" HeightRequest="50" StrokeShape="RoundRectangle 25" StrokeThickness="0" BackgroundColor="{StaticResource LoginColor}" HorizontalOptions="Center">
+                            <Label Text="JD" TextColor="{StaticResource WhiteColor}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="John Doe" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <Label Text="Admin" FontSize="11" TextColor="{StaticResource TextLightColor}" FontAttributes="Bold" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <Label Text="Edit Profile" TextColor="{StaticResource LoginColor}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,4,0,0" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource ProductCardStyle}" VerticalOptions="Start">
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0, 8">
+
+                        <Border WidthRequest="50" HeightRequest="50" StrokeShape="RoundRectangle 25" StrokeThickness="0" BackgroundColor="{StaticResource SecondaryColor}" HorizontalOptions="Center">
+                            <Label Text="AS" TextColor="{StaticResource WhiteColor}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="Alice Smith" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <Label Text="Cashier" FontSize="11" TextColor="{StaticResource TextLightColor}" FontAttributes="Bold" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <Label Text="Edit Profile" TextColor="{StaticResource LoginColor}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,4,0,0" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ProductCardStyle}" VerticalOptions="Start">
+                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0, 8">
+
+                        <Border WidthRequest="50" HeightRequest="50" StrokeShape="RoundRectangle 25" StrokeThickness="0" BackgroundColor="{StaticResource SecondaryColor}" HorizontalOptions="Center">
+                            <Label Text="MJ" TextColor="{StaticResource WhiteColor}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                        </Border>
+
+                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                            <Label Text="Mark Johnson" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <Label Text="Cashier" FontSize="11" TextColor="{StaticResource TextLightColor}" FontAttributes="Bold" HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+
+                        <Label Text="Edit Profile" TextColor="{StaticResource LoginColor}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,4,0,0" />
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

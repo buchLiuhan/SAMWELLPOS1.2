@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAMWELLPOS.MVVM.Views.Register"
+             BackgroundColor="{StaticResource AppBackgroundColor}">
+
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <VerticalStackLayout Padding="24" Spacing="40" HorizontalOptions="Fill" VerticalOptions="Center">
+
+            <VerticalStackLayout HorizontalOptions="Center">
+                <Image Source="samwelllogo.png" WidthRequest="160" Aspect="AspectFit" Margin="0,0,0,10" />
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource CardBorderStyle}" HorizontalOptions="Fill">
+
+                <VerticalStackLayout Spacing="24">
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="FULL NAME" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="John Doe" Style="{StaticResource InputEntryStyle}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="EMAIL ADDRESS" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="admin@samwell.com" Keyboard="Email" Style="{StaticResource InputEntryStyle}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="PASSWORD" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="••••••••" IsPassword="True" Style="{StaticResource InputEntryStyle}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="CONFIRM PASSWORD" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="••••••••" IsPassword="True" Style="{StaticResource InputEntryStyle}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <Button Text="Sign Up" Style="{StaticResource PrimaryButtonStyle}" Margin="0,15,0,0" />
+
+                    <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Margin="0,10,0,0" Spacing="5">
+                        <Label Text="Already have an account?" TextColor="{StaticResource TextLightColor}" VerticalOptions="Center"/>
+                        <Label Text="Login" TextColor="{StaticResource LoginColor}" FontAttributes="Bold" TextDecorations="Underline" VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

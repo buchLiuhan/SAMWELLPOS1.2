@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAMWELLPOS.MVVM.Views.User123.Dashboard.POSDashboard"
+             BackgroundColor="{StaticResource AppBackgroundColor}">
+
+    <Grid RowDefinitions="*, Auto" Padding="16, 16, 16, 24">
+
+        <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="20">
+
+                <Grid ColumnDefinitions="Auto, *, Auto">
+                    <Border Grid.Column="0" WidthRequest="44" HeightRequest="44" StrokeShape="RoundRectangle 22" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}">
+                        <Label Text="SP" TextColor="{StaticResource WhiteColor}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+
+                    <Border Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" StrokeShape="RoundRectangle 20" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}" Padding="16,8">
+                        <HorizontalStackLayout Spacing="8">
+                            <Label Text="Ticket" TextColor="{StaticResource WhiteColor}" FontAttributes="Bold" VerticalOptions="Center"/>
+                            <Border StrokeShape="RoundRectangle 12" BackgroundColor="{StaticResource LoginColor}" Padding="8,2">
+                                <Label Text="3" TextColor="{StaticResource WhiteColor}" FontSize="12" FontAttributes="Bold"/>
+                            </Border>
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="2" WidthRequest="44" HeightRequest="44" StrokeShape="RoundRectangle 22" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}">
+                        <Label Text="🔔" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                </Grid>
+
+                <Border Style="{StaticResource InputContainerStyle}" Padding="16, 8">
+                    <Grid ColumnDefinitions="*, Auto, Auto" ColumnSpacing="12">
+                        <Entry Grid.Column="0" Placeholder="Search products..." Style="{StaticResource InputEntryStyle}" />
+                        <Label Grid.Column="1" Text="⚙️" VerticalOptions="Center" />
+                        <Label Grid.Column="2" Text="📷" VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+
+                <Grid ColumnDefinitions="*, Auto">
+                    <Label Grid.Column="0" Text="All Items" FontAttributes="Bold" FontSize="18" TextColor="{StaticResource WhiteColor}" VerticalOptions="Center"/>
+                    <Label Grid.Column="1" Text="See All" FontSize="13" TextColor="{StaticResource TextLightColor}" VerticalOptions="Center"/>
+                </Grid>
+
+                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" Margin="-16,0">
+                    <HorizontalStackLayout Spacing="12" Padding="16,0">
+                        <Border Style="{StaticResource PillBorderStyle}" BackgroundColor="{StaticResource WhiteColor}">
+                            <Label Text="Featured" Style="{StaticResource PillLabelStyle}" TextColor="#1c1c1c" />
+                        </Border>
+                        <Border Style="{StaticResource PillBorderStyle}">
+                            <Label Text="All Items" Style="{StaticResource PillLabelStyle}" />
+                        </Border>
+                        <Border Style="{StaticResource PillBorderStyle}">
+                            <Label Text="Drinks" Style="{StaticResource PillLabelStyle}" />
+                        </Border>
+                        <Border Style="{StaticResource PillBorderStyle}">
+                            <Label Text="Snacks" Style="{StaticResource PillLabelStyle}" />
+                        </Border>
+                    </HorizontalStackLayout>
+                </ScrollView>
+
+                <FlexLayout Wrap="Wrap" JustifyContent="SpaceBetween" AlignItems="Start" Margin="0,10,0,80">
+
+                    <Border Style="{StaticResource ProductCardStyle}" WidthRequest="170" Margin="0,0,0,16">
+                        <VerticalStackLayout Spacing="12">
+                            <Border HeightRequest="110" StrokeShape="RoundRectangle 12" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}">
+                                <Image Source="samwelllogo.png" Aspect="AspectFit" Margin="10" />
+                            </Border>
+
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Classic Denim" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" />
+                                <Grid ColumnDefinitions="*, Auto" Margin="0,4,0,0">
+                                    <Label Grid.Column="0" Text="$59.99" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource LoginColor}" VerticalOptions="Center"/>
+                                    <Border Grid.Column="1" StrokeShape="RoundRectangle 8" BackgroundColor="{StaticResource InputBackgroundColor}" Padding="8,4">
+                                        <Label Text="+ Add" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextLightColor}"/>
+                                    </Border>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Style="{StaticResource ProductCardStyle}" WidthRequest="170" Margin="0,0,0,16">
+                        <VerticalStackLayout Spacing="12">
+                            <Border HeightRequest="110" StrokeShape="RoundRectangle 12" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}">
+                                <Image Source="samwelllogo.png" Aspect="AspectFit" Margin="10" />
+                            </Border>
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Black Tea" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" />
+                                <Grid ColumnDefinitions="*, Auto" Margin="0,4,0,0">
+                                    <Label Grid.Column="0" Text="$10.00" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource LoginColor}" VerticalOptions="Center"/>
+                                    <Border Grid.Column="1" StrokeShape="RoundRectangle 8" BackgroundColor="{StaticResource InputBackgroundColor}" Padding="8,4">
+                                        <HorizontalStackLayout Spacing="8">
+                                            <Label Text="-" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource TextLightColor}"/>
+                                            <Label Text="1" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource WhiteColor}"/>
+                                            <Label Text="+" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource SuccessColor}"/>
+                                        </HorizontalStackLayout>
+                                    </Border>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Style="{StaticResource ProductCardStyle}" WidthRequest="170" Margin="0,0,0,16">
+                        <VerticalStackLayout Spacing="12">
+                            <Border HeightRequest="110" StrokeShape="RoundRectangle 12" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}">
+                                <Image Source="samwelllogo.png" Aspect="AspectFit" Margin="10" />
+                            </Border>
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="Oversized Tee" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" />
+                                <Grid ColumnDefinitions="*, Auto" Margin="0,4,0,0">
+                                    <Label Grid.Column="0" Text="$25.00" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource LoginColor}" VerticalOptions="Center"/>
+                                    <Border Grid.Column="1" StrokeShape="RoundRectangle 8" BackgroundColor="{StaticResource InputBackgroundColor}" Padding="8,4">
+                                        <Label Text="+ Add" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource TextLightColor}"/>
+                                    </Border>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                </FlexLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Grid Grid.Row="1">
+            <Border StrokeShape="RoundRectangle 30" StrokeThickness="0" BackgroundColor="#0A0A0A" Padding="8">
+                <Grid ColumnDefinitions="*, *">
+                    <Button Grid.Column="0" Text="Save" BackgroundColor="Transparent" TextColor="{StaticResource WhiteColor}" FontAttributes="Bold" FontSize="16" HeightRequest="48" />
+                    <Button Grid.Column="1" Text="Charge" BackgroundColor="{StaticResource LoginColor}" TextColor="{StaticResource WhiteColor}" CornerRadius="24" FontAttributes="Bold" FontSize="16" HeightRequest="48" />
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
+</ContentPage>
