@@ -1,4 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using SAMWELLPOS.Services;
+using SAMWELLPOS.MVVM.ViewModels;
+using SAMWELLPOS.MVVM.Views;
 
 namespace SAMWELLPOS
 {
@@ -29,6 +32,19 @@ namespace SAMWELLPOS
     handler.PlatformView.BorderThickness = new Microsoft.UI.Xaml.Thickness(0);
 #endif
             });
+
+            // 1. Register the Database Service as a Singleton
+            builder.Services.AddSingleton<DatabaseService>();
+
+            // 2. Register your ViewModels (We'll build these next!)
+            // Transient means a fresh copy is created every time you go to the page
+            builder.Services.AddTransient<RegistrationViewModel>();
+
+            // 3. Register your Views
+            builder.Services.AddTransient<Register>();
+
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<Login>(); // Or whatever your login view is named
 
             return builder.Build();
 
