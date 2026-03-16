@@ -60,6 +60,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\parodyproduct\samsungs23.png" />
+	  <None Remove="Resources\Images\parodyproduct\samsungs24.png" />
+	  <None Remove="Resources\Images\parodyproduct\samsungs25.png" />
+	  <None Remove="Resources\Images\parodyproduct\samsungs26.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.0" />
@@ -69,6 +76,13 @@
 	<ItemGroup>
 	  <Folder Include="MVVM\Models\Admin\" />
 	  <Folder Include="MVVM\Models\User\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\parodyproduct\samsungs23.png" />
+	  <MauiImage Include="Resources\Images\parodyproduct\samsungs24.png" />
+	  <MauiImage Include="Resources\Images\parodyproduct\samsungs25.png" />
+	  <MauiImage Include="Resources\Images\parodyproduct\samsungs26.png" />
 	</ItemGroup>
 
 	<ItemGroup>
