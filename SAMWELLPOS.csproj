@@ -87,6 +87,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="MVVM\Views\Admin\ProductManagement.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="MVVM\Views\Admin\Reports.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="MVVM\Views\Admin\User ManagementCreate.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

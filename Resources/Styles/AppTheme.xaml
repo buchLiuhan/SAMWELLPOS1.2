@@ -139,6 +139,9 @@
     <FileImageSource x:Key="IconLogout" File="logout.png" />
     <FileImageSource x:Key="IconCart" File="carticon.png" />
     <FileImageSource x:Key="Trash" File="trash.png"/>
+    <FileImageSource x:Key="IconUsers" File="usericon.png" />
+    <FileImageSource x:Key="IconProducts" File="product.png" />
+    <FileImageSource x:Key="IconReports" File="reports.png" />
 
     <Style x:Key="CircularIconBorderStyle" TargetType="Border">
         <Setter Property="WidthRequest" Value="44" />

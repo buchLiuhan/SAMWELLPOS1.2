@@ -53,5 +53,20 @@ namespace SAMWELLPOS.MVVM.ViewModels
         {
             await Shell.Current.GoToAsync($"User_ManagementEdit?UserId={userId}");
         }
+
+        [RelayCommand]
+        private async Task Logout()
+        {
+            bool confirmed = await Shell.Current.DisplayAlert(
+                "Logout",
+                "Are you sure you want to log out?",
+                "Logout",
+                "Cancel");
+
+            if (!confirmed) return;
+
+            // Navigate back to login and clear the back stack
+            await Shell.Current.GoToAsync("//Login");
+        }
     }
 }

@@ -9,11 +9,25 @@
 
     <Grid RowDefinitions="Auto, Auto, *" Padding="16, 24, 16, 0">
 
-        <!-- Logo -->
-        <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Margin="0,0,0,24">
-            <Image Source="samwelllogo.png" WidthRequest="160" Aspect="AspectFit" />
-        </VerticalStackLayout>
+        <Grid Grid.Row="0" Margin="0,0,0,24">
 
+            <VerticalStackLayout HorizontalOptions="Center">
+                <Image Source="samwelllogo.png" WidthRequest="160" Aspect="AspectFit" />
+            </VerticalStackLayout>
+
+            <Border Style="{StaticResource CircularIconBorderStyle}"
+            HorizontalOptions="End"
+            VerticalOptions="Center">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding LogoutCommand}" />
+                </Border.GestureRecognizers>
+                <Image Source="{StaticResource IconLogout}"
+               WidthRequest="22" HeightRequest="22"
+               HorizontalOptions="Center"
+               VerticalOptions="Center" />
+            </Border>
+
+        </Grid>
         <!-- Search + Add -->
         <Grid Grid.Row="1" ColumnDefinitions="*, Auto" ColumnSpacing="12" Margin="0,0,0,20">
             <Border Grid.Column="0" Style="{StaticResource InputContainerStyle}" Padding="16, 4" Margin="0">
