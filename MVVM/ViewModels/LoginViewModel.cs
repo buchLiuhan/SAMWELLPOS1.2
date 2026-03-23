@@ -9,6 +9,7 @@ using SAMWELLPOS.Services;
 
 namespace SAMWELLPOS.MVVM.ViewModels
 {
+    //comment 
     public partial class LoginViewModel : ObservableObject
     {
         private readonly DatabaseService _dbService;
