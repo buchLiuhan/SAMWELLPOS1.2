@@ -58,18 +58,33 @@
                     <Border Style="{StaticResource ProductCardStyle}" VerticalOptions="Start" Margin="0,0,0,0">
                         <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0,8">
 
-                            <!-- Avatar Circle -->
-                            <Border WidthRequest="50" HeightRequest="50"
-                                    StrokeShape="RoundRectangle 25"
-                                    StrokeThickness="0"
-                                    BackgroundColor="{Binding AvatarColor}"
-                                    HorizontalOptions="Center">
-                                <Label Text="{Binding Initials}"
-                                       TextColor="{StaticResource WhiteColor}"
-                                       FontSize="18" FontAttributes="Bold"
-                                       HorizontalOptions="Center"
-                                       VerticalOptions="Center" />
-                            </Border>
+                            <Grid WidthRequest="50" HeightRequest="50" HorizontalOptions="Center">
+
+                                <!-- Profile photo -->
+                                <Border WidthRequest="50" HeightRequest="50"
+                                        StrokeShape="RoundRectangle 25"
+                                        StrokeThickness="0"
+                                        BackgroundColor="{Binding AvatarColor}"
+                                        IsVisible="{Binding HasProfilePicture}">
+                                    <Image Source="{Binding ProfilePicturePath}"
+                                           Aspect="AspectFill"
+                                           WidthRequest="50" HeightRequest="50" />
+                                </Border>
+
+                                <!-- Initials fallback -->
+                                <Border WidthRequest="50" HeightRequest="50"
+                                         StrokeShape="RoundRectangle 25"
+                                         StrokeThickness="0"
+                                         BackgroundColor="{Binding AvatarColor}"
+                                         IsVisible="{Binding HasProfilePicture, Converter={StaticResource InverseBoolConverter}}">
+                                    <Label Text="{Binding Initials}"
+                                           TextColor="{StaticResource WhiteColor}"
+                                           FontSize="18" FontAttributes="Bold"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+
+                            </Grid>
 
                             <!-- Name + Role -->
                             <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
@@ -90,8 +105,12 @@
                                    TextColor="{StaticResource LoginColor}"
                                    FontSize="12" FontAttributes="Bold"
                                    HorizontalOptions="Center"
-                                   Margin="0,4,0,0" />
-
+                                   Margin="0,4,0,0">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.NavigateToEditCommand}"
+                              CommandParameter="{Binding Id}" />
+                                </Label.GestureRecognizers>
+                            </Label>
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>

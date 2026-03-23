@@ -50,6 +50,9 @@ namespace SAMWELLPOS.MVVM.Models
         ? Color.FromArgb("#0f4c5c")  // LoginColor
         : Color.FromArgb("#586F7C"); // SecondaryColor
 
+        [Ignore]
+        public bool HasProfilePicture => !string.IsNullOrEmpty(ProfilePicturePath);
+
     }
 
 

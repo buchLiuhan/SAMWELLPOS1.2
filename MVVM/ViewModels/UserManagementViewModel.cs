@@ -48,5 +48,10 @@ namespace SAMWELLPOS.MVVM.ViewModels
         {
             await Shell.Current.GoToAsync("User_ManagementCreate");
         }
+        [RelayCommand]
+        private async Task NavigateToEdit(int userId)
+        {
+            await Shell.Current.GoToAsync($"User_ManagementEdit?UserId={userId}");
+        }
     }
 }

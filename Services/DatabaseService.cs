@@ -60,6 +60,12 @@ namespace SAMWELLPOS.Services
             await Init();
             return await _db!.DeleteAsync(user);
         }
+
+        public async Task<UserModel> GetUserById(int id)
+        {
+            await Init();
+            return await _db!.Table<UserModel>().Where(u => u.Id == id).FirstOrDefaultAsync();
+        }
     }
 }
 
