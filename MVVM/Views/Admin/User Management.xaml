@@ -1,85 +1,107 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SAMWELLPOS.MVVM.ViewModels"
+             xmlns:models="clr-namespace:SAMWELLPOS.MVVM.Models"
              x:Class="SAMWELLPOS.MVVM.Views.Admin.User_Management"
-             Title="User_Management"
+             Title="User Management"
              BackgroundColor="{StaticResource AppBackgroundColor}">
 
     <Grid RowDefinitions="Auto, Auto, *" Padding="16, 24, 16, 0">
 
+        <!-- Logo -->
         <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Margin="0,0,0,24">
             <Image Source="samwelllogo.png" WidthRequest="160" Aspect="AspectFit" />
         </VerticalStackLayout>
 
+        <!-- Search + Add -->
         <Grid Grid.Row="1" ColumnDefinitions="*, Auto" ColumnSpacing="12" Margin="0,0,0,20">
             <Border Grid.Column="0" Style="{StaticResource InputContainerStyle}" Padding="16, 4" Margin="0">
                 <Grid ColumnDefinitions="*, Auto">
-                    <Entry Grid.Column="0" Placeholder="Search users..." Style="{StaticResource InputEntryStyle}" />
-                    <Label Grid.Column="1" Text="🔍" VerticalOptions="Center" TextColor="{StaticResource TextLightColor}" />
+                    <Entry Grid.Column="0"
+                           Placeholder="Search users..."
+                           Style="{StaticResource InputEntryStyle}"
+                           Text="{Binding SearchText}" />
+                    <Image Grid.Column="1"
+                           Source="{StaticResource IconSearch}"
+                           WidthRequest="22" HeightRequest="22"
+                           VerticalOptions="Center" />
                 </Grid>
             </Border>
 
-            <Border Grid.Column="1" Style="{StaticResource PillBorderStyle}" BackgroundColor="{StaticResource LoginColor}" Padding="16, 0">
-                <Label Text="+ Add" Style="{StaticResource PillLabelStyle}" TextColor="{StaticResource WhiteColor}" />
+            <Border Grid.Column="1" Style="{StaticResource PillBorderStyle}"
+                    BackgroundColor="{StaticResource LoginColor}" Padding="16, 0">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToCreateCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="+ Add" Style="{StaticResource PillLabelStyle}"
+           TextColor="{StaticResource WhiteColor}" />
             </Border>
+            
+            
         </Grid>
 
-        <ScrollView Grid.Row="2" VerticalScrollBarVisibility="Never">
+        <!-- User Cards -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding FilteredUsers}"
+                        VerticalScrollBarVisibility="Never">
 
-            <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="12" RowSpacing="12" Padding="0,0,0,24" VerticalOptions="Start">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical"
+                                 Span="2"
+                                 HorizontalItemSpacing="12"
+                                 VerticalItemSpacing="12" />
+            </CollectionView.ItemsLayout>
 
-                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource ProductCardStyle}" VerticalOptions="Start">
-                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0, 8">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:UserModel">
+                    <Border Style="{StaticResource ProductCardStyle}" VerticalOptions="Start" Margin="0,0,0,0">
+                        <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0,8">
 
-                        <Border WidthRequest="50" HeightRequest="50" StrokeShape="RoundRectangle 25" StrokeThickness="0" BackgroundColor="{StaticResource LoginColor}" HorizontalOptions="Center">
-                            <Label Text="JD" TextColor="{StaticResource WhiteColor}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-                        </Border>
+                            <!-- Avatar Circle -->
+                            <Border WidthRequest="50" HeightRequest="50"
+                                    StrokeShape="RoundRectangle 25"
+                                    StrokeThickness="0"
+                                    BackgroundColor="{Binding AvatarColor}"
+                                    HorizontalOptions="Center">
+                                <Label Text="{Binding Initials}"
+                                       TextColor="{StaticResource WhiteColor}"
+                                       FontSize="18" FontAttributes="Bold"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
 
-                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                            <Label Text="John Doe" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                            <Label Text="Admin" FontSize="11" TextColor="{StaticResource TextLightColor}" FontAttributes="Bold" HorizontalOptions="Center" />
+                            <!-- Name + Role -->
+                            <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                <Label Text="{Binding FullName}"
+                                       FontAttributes="Bold" FontSize="14"
+                                       TextColor="{StaticResource WhiteColor}"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center" />
+                                <Label Text="{Binding Role}"
+                                       FontSize="11"
+                                       TextColor="{StaticResource TextLightColor}"
+                                       FontAttributes="Bold"
+                                       HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+
+                            <!-- Edit Link -->
+                            <Label Text="Edit Profile"
+                                   TextColor="{StaticResource LoginColor}"
+                                   FontSize="12" FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   Margin="0,4,0,0" />
+
                         </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
 
-                        <Label Text="Edit Profile" TextColor="{StaticResource LoginColor}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,4,0,0" />
+            <CollectionView.Footer>
+                <BoxView HeightRequest="24" Color="Transparent" />
+            </CollectionView.Footer>
 
-                    </VerticalStackLayout>
-                </Border>
+        </CollectionView>
 
-                <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource ProductCardStyle}" VerticalOptions="Start">
-                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0, 8">
-
-                        <Border WidthRequest="50" HeightRequest="50" StrokeShape="RoundRectangle 25" StrokeThickness="0" BackgroundColor="{StaticResource SecondaryColor}" HorizontalOptions="Center">
-                            <Label Text="AS" TextColor="{StaticResource WhiteColor}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-                        </Border>
-
-                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                            <Label Text="Alice Smith" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                            <Label Text="Cashier" FontSize="11" TextColor="{StaticResource TextLightColor}" FontAttributes="Bold" HorizontalOptions="Center" />
-                        </VerticalStackLayout>
-
-                        <Label Text="Edit Profile" TextColor="{StaticResource LoginColor}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,4,0,0" />
-
-                    </VerticalStackLayout>
-                </Border>
-
-                <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ProductCardStyle}" VerticalOptions="Start">
-                    <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0, 8">
-
-                        <Border WidthRequest="50" HeightRequest="50" StrokeShape="RoundRectangle 25" StrokeThickness="0" BackgroundColor="{StaticResource SecondaryColor}" HorizontalOptions="Center">
-                            <Label Text="MJ" TextColor="{StaticResource WhiteColor}" FontSize="18" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" />
-                        </Border>
-
-                        <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                            <Label Text="Mark Johnson" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
-                            <Label Text="Cashier" FontSize="11" TextColor="{StaticResource TextLightColor}" FontAttributes="Bold" HorizontalOptions="Center" />
-                        </VerticalStackLayout>
-
-                        <Label Text="Edit Profile" TextColor="{StaticResource LoginColor}" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,4,0,0" />
-
-                    </VerticalStackLayout>
-                </Border>
-
-            </Grid>
-        </ScrollView>
     </Grid>
 </ContentPage>

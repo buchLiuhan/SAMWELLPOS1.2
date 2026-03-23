@@ -2,6 +2,8 @@
 using SAMWELLPOS.Services;
 using SAMWELLPOS.MVVM.ViewModels;
 using SAMWELLPOS.MVVM.Views;
+using SAMWELLPOS.MVVM.Views.Admin;
+using CommunityToolkit.Maui;
 
 namespace SAMWELLPOS
 {
@@ -12,6 +14,7 @@ namespace SAMWELLPOS
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -45,6 +48,12 @@ namespace SAMWELLPOS
 
             builder.Services.AddTransient<LoginViewModel>();
             builder.Services.AddTransient<Login>(); // Or whatever your login view is named
+
+            builder.Services.AddTransient<UserManagementViewModel>();
+            builder.Services.AddTransient<User_Management>();
+
+            builder.Services.AddTransient<UserManagementCreateViewModel>();
+            builder.Services.AddTransient<User_ManagementCreate>();
 
             return builder.Build();
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SAMWELLPOS.MVVM.ViewModels"
              x:Class="SAMWELLPOS.MVVM.Views.Admin.User_ManagementCreate"
              Title="User_ManagementCreate"
              BackgroundColor="{StaticResource AppBackgroundColor}">
@@ -12,85 +13,135 @@
         </VerticalStackLayout>
 
         <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
-
             <Border Style="{StaticResource CardBorderStyle}" HorizontalOptions="Fill" VerticalOptions="Start">
                 <VerticalStackLayout Spacing="20">
 
+                    <!-- Avatar Preview -->
                     <Grid HorizontalOptions="Center" Margin="0,10,0,20">
 
-                        <Border x:Name="ProfileImageBorder"
-                                WidthRequest="120" HeightRequest="120"
-                                StrokeShape="RoundRectangle 60"
-                                StrokeThickness="0"
-                                BackgroundColor="{StaticResource LoginColor}">
-                            <Label Text="+" TextColor="{StaticResource WhiteColor}" FontSize="48" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" Margin="0,-4,0,0" />
-
+                        <!-- Shows picked photo if available -->
+                        <Border WidthRequest="120" HeightRequest="120"
+            StrokeShape="RoundRectangle 60"
+            StrokeThickness="0"
+            BackgroundColor="{StaticResource LoginColor}"
+            IsVisible="{Binding HasProfilePicture}">
+                            <Image Source="{Binding ProfilePicturePath}"
+               Aspect="AspectFill"
+               WidthRequest="120"
+               HeightRequest="120" />
                             <Border.GestureRecognizers>
-                                <TapGestureRecognizer />
+                                <TapGestureRecognizer Command="{Binding PickPhotoCommand}" />
                             </Border.GestureRecognizers>
                         </Border>
 
-                        <Border Margin="0,0,0,-8" VerticalOptions="End" HorizontalOptions="Center" Style="{StaticResource PillBorderStyle}" BackgroundColor="#D91c1c1c" Padding="12, 6">
-                            <Label Text="Add" FontSize="11" FontAttributes="Bold" TextColor="{StaticResource WhiteColor}" HorizontalOptions="Center"/>
+                        <!-- Shows "+" placeholder if no photo -->
+                        <Border WidthRequest="120" HeightRequest="120"
+            StrokeShape="RoundRectangle 60"
+            StrokeThickness="0"
+            BackgroundColor="{StaticResource LoginColor}"
+            IsVisible="{Binding HasProfilePicture, Converter={x:StaticResource InverseBoolConverter}}">
+                            <Label Text="+" TextColor="{StaticResource WhiteColor}"
+               FontSize="48" FontAttributes="Bold"
+               HorizontalOptions="Center" VerticalOptions="Center"
+               Margin="0,-4,0,0" />
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickPhotoCommand}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+
+                        <!-- "Add" pill label -->
+                        <Border Margin="0,0,0,-8" VerticalOptions="End" HorizontalOptions="Center"
+            Style="{StaticResource PillBorderStyle}"
+            BackgroundColor="#D91c1c1c" Padding="12,6">
+                            <Label Text="Add Photo" FontSize="11" FontAttributes="Bold"
+               TextColor="{StaticResource WhiteColor}"
+               HorizontalOptions="Center" />
                         </Border>
                     </Grid>
 
+                    <!-- Full Name -->
                     <VerticalStackLayout Spacing="8">
                         <Label Text="FULL NAME" Style="{StaticResource InputLabelStyle}" />
                         <Border Style="{StaticResource InputContainerStyle}">
-                            <Entry Placeholder="e.g. John Doe" Style="{StaticResource InputEntryStyle}" />
+                            <Entry Placeholder="e.g. John Doe"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Text="{Binding FullName}" />
                         </Border>
                     </VerticalStackLayout>
 
+                    <!-- Email -->
                     <VerticalStackLayout Spacing="8">
                         <Label Text="EMAIL ADDRESS" Style="{StaticResource InputLabelStyle}" />
                         <Border Style="{StaticResource InputContainerStyle}">
-                            <Entry Placeholder="e.g. user@samwell.com" Keyboard="Email" Style="{StaticResource InputEntryStyle}" />
+                            <Entry Placeholder="e.g. user@samwell.com"
+                                   Keyboard="Email"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Text="{Binding Email}" />
                         </Border>
                     </VerticalStackLayout>
 
+                    <!-- Password -->
                     <VerticalStackLayout Spacing="8">
                         <Label Text="TEMPORARY PASSWORD" Style="{StaticResource InputLabelStyle}" />
                         <Border Style="{StaticResource InputContainerStyle}">
-                            <Entry Placeholder="••••••••" IsPassword="True" Style="{StaticResource InputEntryStyle}" />
+                            <Entry Placeholder="••••••••"
+                                   IsPassword="True"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Text="{Binding Password}" />
                         </Border>
                     </VerticalStackLayout>
 
+                    <!-- Role Picker -->
                     <VerticalStackLayout Spacing="8">
                         <Label Text="SYSTEM ROLE" Style="{StaticResource InputLabelStyle}" />
                         <Border Style="{StaticResource InputContainerStyle}">
-                            <Picker Title="Select a role" TextColor="{StaticResource WhiteColor}" TitleColor="#7A8B99" Margin="0,4" FontSize="15">
-                                <Picker.ItemsSource>
-                                    <x:Array Type="{x:Type x:String}">
-                                        <x:String>Admin</x:String>
-                                        <x:String>User / Cashier</x:String>
-                                    </x:Array>
-                                </Picker.ItemsSource>
-                                <Picker.SelectedIndex>1</Picker.SelectedIndex>
-                            </Picker>
+                            <Picker Title="Select a role"
+                                    TextColor="{StaticResource WhiteColor}"
+                                    TitleColor="#7A8B99"
+                                    Margin="0,4" FontSize="15"
+                                    ItemsSource="{Binding Roles}"
+                                    SelectedItem="{Binding SelectedRole}" />
                         </Border>
                     </VerticalStackLayout>
 
+                    <!-- Approved Toggle -->
                     <Grid ColumnDefinitions="*, Auto" Margin="4,10,4,0">
                         <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
-                            <Label Text="Account Approved" FontAttributes="Bold" TextColor="{StaticResource WhiteColor}" FontSize="15" />
-                            <Label Text="User can log into the POS system" TextColor="{StaticResource TextLightColor}" FontSize="12" />
+                            <Label Text="Account Approved" FontAttributes="Bold"
+                                   TextColor="{StaticResource WhiteColor}" FontSize="15" />
+                            <Label Text="User can log into the POS system"
+                                   TextColor="{StaticResource TextLightColor}" FontSize="12" />
                         </VerticalStackLayout>
-
-                        <Switch Grid.Column="1" IsToggled="True" OnColor="{StaticResource LoginColor}" />
+                        <Switch Grid.Column="1"
+                                IsToggled="{Binding IsApproved}"
+                                OnColor="{StaticResource LoginColor}" />
                     </Grid>
 
-                    <Button Text="Create User" Style="{StaticResource PrimaryButtonStyle}" Margin="0,20,0,0" />
+                    <!-- Error Message -->
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="{StaticResource ErrorColor}"
+                           FontSize="13" HorizontalOptions="Center"
+                           IsVisible="{Binding HasError}" />
 
-                    <Label Text="Cancel" TextColor="{StaticResource TextLightColor}" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,15,0,0">
+                    <!-- Create Button -->
+                    <Button Text="Create User"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding CreateUserCommand}"
+                            Margin="0,20,0,0" />
+
+                    <!-- Cancel -->
+                    <Label Text="Cancel"
+                           TextColor="{StaticResource TextLightColor}"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           Margin="0,15,0,0">
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer />
+                            <TapGestureRecognizer Command="{Binding CancelCommand}" />
                         </Label.GestureRecognizers>
                     </Label>
 
                 </VerticalStackLayout>
             </Border>
-
         </ScrollView>
     </Grid>
 </ContentPage>

@@ -31,5 +31,26 @@ namespace SAMWELLPOS.MVVM.Models
 
         // Optional: Store the path to the profile picture we added earlier
         public string? ProfilePicturePath { get; set; }
+
+        [Ignore]
+        public string Initials
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(FullName)) return "?";
+                var parts = FullName.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                return parts.Length >= 2
+                    ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
+                    : parts[0][0].ToString().ToUpper();
+            }
+        }
+
+        [Ignore]
+        public Color AvatarColor => Role == "Admin"
+        ? Color.FromArgb("#0f4c5c")  // LoginColor
+        : Color.FromArgb("#586F7C"); // SecondaryColor
+
     }
+
+
 }
