@@ -3,6 +3,7 @@ using SAMWELLPOS.Services;
 using SAMWELLPOS.MVVM.ViewModels;
 using SAMWELLPOS.MVVM.Views;
 using SAMWELLPOS.MVVM.Views.Admin;
+using SAMWELLPOS.MVVM.Views.User123.Dashboard;
 using CommunityToolkit.Maui;
 
 namespace SAMWELLPOS
@@ -66,6 +67,9 @@ namespace SAMWELLPOS
             builder.Services.AddTransient<ProductManagementEdit>();
             builder.Services.AddTransient<ProductManagementDetailsViewModel>();
             builder.Services.AddTransient<ProductManagementDetails>();
+            builder.Services.AddSingleton<CartService>();  // ← Singleton so cart persists across pages
+            builder.Services.AddTransient<POSDashboardViewModel>();
+            builder.Services.AddTransient<POSDashboard>();
 
 
 

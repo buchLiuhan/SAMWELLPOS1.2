@@ -1,165 +1,228 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SAMWELLPOS.MVVM.Models"
+             xmlns:vm="clr-namespace:SAMWELLPOS.MVVM.ViewModels"
              x:Class="SAMWELLPOS.MVVM.Views.User123.Dashboard.POSDashboard"
-             BackgroundColor="{StaticResource AppBackgroundColor}">
+             BackgroundColor="{StaticResource AppBackgroundColor}"
+             Shell.NavBarIsVisible="False">
 
-    <Grid RowDefinitions="*, Auto" Padding="16, 16, 16, 24">
+    <Grid RowDefinitions="*, Auto" Padding="16,16,16,24">
 
         <ScrollView Grid.Row="0" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="20">
 
+                <!-- Top Bar -->
                 <Grid ColumnDefinitions="Auto, *, Auto">
+
+                    <!-- Dashboard icon -->
                     <Border Grid.Column="0" Style="{StaticResource CircularIconBorderStyle}">
-                        <Image Source="{StaticResource IconDashboard}" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Image Source="{StaticResource IconDashboard}"
+                               WidthRequest="20" HeightRequest="20"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
                     </Border>
 
-                    <Border Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center" StrokeShape="RoundRectangle 20" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}" Padding="16,8">
+                    <!-- Cart button with badge -->
+                    <Border Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center"
+                            StrokeShape="RoundRectangle 20" StrokeThickness="0"
+                            BackgroundColor="{StaticResource InputBackgroundColor}"
+                            Padding="16,8">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToCartCommand}" />
+                        </Border.GestureRecognizers>
                         <HorizontalStackLayout Spacing="8">
-                            <Image Source="{StaticResource IconCart}" WidthRequest="18" HeightRequest="18" VerticalOptions="Center" />
-                            <Border StrokeShape="RoundRectangle 12" BackgroundColor="{StaticResource LoginColor}" Padding="8,2">
-                                <Label Text="2" TextColor="{StaticResource WhiteColor}" FontSize="12" FontAttributes="Bold"/>
+                            <Image Source="{StaticResource IconCart}"
+                                   WidthRequest="18" HeightRequest="18"
+                                   VerticalOptions="Center" />
+                            <Border StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="{StaticResource LoginColor}"
+                                    Padding="8,2">
+                                <Label Text="{Binding CartCount}"
+                                       TextColor="{StaticResource WhiteColor}"
+                                       FontSize="12" FontAttributes="Bold" />
                             </Border>
                         </HorizontalStackLayout>
                     </Border>
 
+                    <!-- Logout -->
                     <Border Grid.Column="2" Style="{StaticResource CircularIconBorderStyle}">
-                        <Image Source="{StaticResource IconLogout}" WidthRequest="20" HeightRequest="20" HorizontalOptions="Center" VerticalOptions="Center" />
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LogoutCommand}" />
+                        </Border.GestureRecognizers>
+                        <Image Source="{StaticResource IconLogout}"
+                               WidthRequest="20" HeightRequest="20"
+                               HorizontalOptions="Center" VerticalOptions="Center" />
                     </Border>
+
                 </Grid>
 
-                <Border Style="{StaticResource InputContainerStyle}" Padding="16, 4">
+                <!-- Search -->
+                <Border Style="{StaticResource InputContainerStyle}" Padding="16,4">
                     <Grid ColumnDefinitions="*, Auto" ColumnSpacing="12">
-                        <Entry Grid.Column="0" Placeholder="Search products..." Style="{StaticResource InputEntryStyle}" />
-                        <Image Grid.Column="1" Source="{StaticResource IconSearch}" WidthRequest="22" HeightRequest="22" VerticalOptions="Center" />
+                        <Entry Grid.Column="0"
+                               Placeholder="Search products..."
+                               Style="{StaticResource InputEntryStyle}"
+                               Text="{Binding SearchText}" />
+                        <Image Grid.Column="1"
+                               Source="{StaticResource IconSearch}"
+                               WidthRequest="22" HeightRequest="22"
+                               VerticalOptions="Center" />
                     </Grid>
                 </Border>
 
-                <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never" Margin="-16,0">
-                    <HorizontalStackLayout Spacing="12" Padding="16,0">
-                        <Border Style="{StaticResource PillBorderStyle}" BackgroundColor="{StaticResource WhiteColor}">
-                            <Label Text="Featured" Style="{StaticResource PillLabelStyle}" TextColor="#1c1c1c" />
-                        </Border>
-                        <Border Style="{StaticResource PillBorderStyle}">
-                            <Label Text="All Items" Style="{StaticResource PillLabelStyle}" />
-                        </Border>
-                        <Border Style="{StaticResource PillBorderStyle}">
-                            <Label Text="Drinks" Style="{StaticResource PillLabelStyle}" />
-                        </Border>
+                <!-- Category Pills -->
+                <ScrollView Orientation="Horizontal"
+                            HorizontalScrollBarVisibility="Never"
+                            Margin="-16,0">
+                    <BindableLayout.ItemsSource>
+                        <Binding Path="Categories" />
+                    </BindableLayout.ItemsSource>
+                    <HorizontalStackLayout x:Name="CategoryPills"
+                                           Spacing="12" Padding="16,0"
+                                           BindableLayout.ItemsSource="{Binding Categories}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
+                                <Border Style="{StaticResource PillBorderStyle}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.SetCategoryCommand}"
+                                            CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="{Binding .}"
+                                           Style="{StaticResource PillLabelStyle}" />
+                                </Border>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
                     </HorizontalStackLayout>
                 </ScrollView>
 
-                <CollectionView Margin="0,0,0,80">
+                <!-- Product Grid -->
+                <CollectionView ItemsSource="{Binding FilteredProducts}"
+                                VerticalScrollBarVisibility="Never"
+                                Margin="0,0,0,80">
                     <CollectionView.ItemsLayout>
-                        <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="12" VerticalItemSpacing="16" />
+                        <GridItemsLayout Orientation="Vertical"
+                                         Span="2"
+                                         HorizontalItemSpacing="12"
+                                         VerticalItemSpacing="16" />
                     </CollectionView.ItemsLayout>
-                    <CollectionView.Footer>
-                        <VerticalStackLayout Spacing="16">
-                            <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
 
-                                <Border Grid.Column="0" Style="{StaticResource ProductCardStyle}">
-                                    <VerticalStackLayout Spacing="12">
-                                        <Border HeightRequest="110" StrokeShape="RoundRectangle 12" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}">
-                                            <Image Source="samsungs23.png" Aspect="AspectFill" VerticalOptions="Start"/>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:ProductModel">
+                            <Border Style="{StaticResource ProductCardStyle}">
+                                <VerticalStackLayout Spacing="12">
+
+                                    <!-- Product Image -->
+                                    <Grid>
+                                        <Border HeightRequest="110"
+                                                StrokeShape="RoundRectangle 12"
+                                                StrokeThickness="0"
+                                                BackgroundColor="{StaticResource InputBackgroundColor}"
+                                                IsVisible="{Binding HasImage}">
+                                            <Image Source="{Binding ImagePath}"
+                                                   Aspect="AspectFill" />
                                         </Border>
-                                        <VerticalStackLayout Spacing="8">
-                                            <Label Text="Samsung S23" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" />
-                                            <Label Text="$799.99" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource LoginColor}" />
-                                            <Border Style="{StaticResource StepperContainerStyle}">
-                                                <Grid ColumnDefinitions="55, *, 55">
-                                                    <Border Grid.Column="0" BackgroundColor="{StaticResource MutedError2}" HeightRequest="36" StrokeShape="RoundRectangle 8">
-                                                        <Label Text="-" Style="{StaticResource StepperLabelStyle}" FontSize="20" />
-                                                    </Border>
-                                                    <Label Grid.Column="1" Text="1" Style="{StaticResource StepperLabelStyle}" />
-                                                    <Border Grid.Column="2" BackgroundColor="{StaticResource MutedSuccess2}" HeightRequest="36" StrokeShape="RoundRectangle 8">
-                                                        <Label Text="+" Style="{StaticResource StepperLabelStyle}" FontSize="20" />
-                                                    </Border>
-                                                </Grid>
-                                            </Border>
-                                        </VerticalStackLayout>
-                                    </VerticalStackLayout>
-                                </Border>
 
-                                <Border Grid.Column="1" Style="{StaticResource ProductCardStyle}">
-                                    <VerticalStackLayout Spacing="12">
-                                        <Border HeightRequest="110" StrokeShape="RoundRectangle 12" StrokeThickness="0" BackgroundColor="{StaticResource InputBackgroundColor}">
-                                            <Image Source="samsungs24.png" Aspect="AspectFill" VerticalOptions="Start"/>
+                                        <Border HeightRequest="110"
+                                                StrokeShape="RoundRectangle 12"
+                                                StrokeThickness="0"
+                                                BackgroundColor="{StaticResource LoginColor}"
+                                                IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}">
+                                            <Label Text="{Binding Initials}"
+                                                   FontSize="36" FontAttributes="Bold"
+                                                   TextColor="{StaticResource WhiteColor}"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
                                         </Border>
-                                        <VerticalStackLayout Spacing="8">
-                                            <Label Text="Samsung S24" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource WhiteColor}" />
-                                            <Label Text="$1000" FontAttributes="Bold" FontSize="14" TextColor="{StaticResource LoginColor}" />
-                                            <Border Style="{StaticResource StepperContainerStyle}">
-                                                <Grid ColumnDefinitions="55, *, 55">
-                                                    <Border Grid.Column="0" BackgroundColor="{StaticResource MutedError2}" HeightRequest="36" StrokeShape="RoundRectangle 8">
-                                                        <Label Text="-" Style="{StaticResource StepperLabelStyle}" FontSize="20" />
-                                                    </Border>
-                                                    <Label Grid.Column="1" Text="1" Style="{StaticResource StepperLabelStyle}" />
-                                                    <Border Grid.Column="2" BackgroundColor="{StaticResource MutedSuccess2}" HeightRequest="36" StrokeShape="RoundRectangle 8">
-                                                        <Label Text="+" Style="{StaticResource StepperLabelStyle}" FontSize="20" />
-                                                    </Border>
-                                                </Grid>
-                                            </Border>
-                                        </VerticalStackLayout>
-                                    </VerticalStackLayout>
-                                </Border>
+                                    </Grid>
 
-                            </Grid>
-                        </VerticalStackLayout>
-                    </CollectionView.Footer>
+                                    <VerticalStackLayout Spacing="8">
+
+                                        <!-- Name + Price -->
+                                        <Label Text="{Binding Name}"
+                                               FontAttributes="Bold" FontSize="14"
+                                               TextColor="{StaticResource WhiteColor}"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="1" />
+                                        <Label Text="{Binding PriceDisplay}"
+                                               FontAttributes="Bold" FontSize="14"
+                                               TextColor="{StaticResource LoginColor}" />
+
+                                        <!-- Stepper -->
+                                        <Border Style="{StaticResource StepperContainerStyle}">
+                                            <Grid ColumnDefinitions="55, *, 55">
+
+                                                <Border Grid.Column="0"
+                                                        BackgroundColor="{StaticResource MutedError2}"
+                                                        HeightRequest="36"
+                                                        StrokeShape="RoundRectangle 8">
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.DecrementCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                    </Border.GestureRecognizers>
+                                                    <Label Text="-"
+                                                           Style="{StaticResource StepperLabelStyle}"
+                                                           FontSize="20" />
+                                                </Border>
+
+                                                <Label Grid.Column="1"
+                                                       Text="{Binding CartQuantityDisplay}"
+                                                       Style="{StaticResource StepperLabelStyle}" />
+
+                                                <Border Grid.Column="2"
+                                                        BackgroundColor="{StaticResource MutedSuccess2}"
+                                                        HeightRequest="36"
+                                                        StrokeShape="RoundRectangle 8">
+                                                    <Border.GestureRecognizers>
+                                                        <TapGestureRecognizer
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.IncrementCommand}"
+                                                            CommandParameter="{Binding .}" />
+                                                    </Border.GestureRecognizers>
+                                                    <Label Text="+"
+                                                           Style="{StaticResource StepperLabelStyle}"
+                                                           FontSize="20" />
+                                                </Border>
+
+                                            </Grid>
+                                        </Border>
+
+                                    </VerticalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
                 </CollectionView>
 
             </VerticalStackLayout>
         </ScrollView>
 
+        <!-- Bottom Bar -->
         <Grid Grid.Row="1">
-            <Border StrokeShape="RoundRectangle 30" StrokeThickness="0" BackgroundColor="#0A0A0A" Padding="8">
+            <Border StrokeShape="RoundRectangle 30"
+                    StrokeThickness="0"
+                    BackgroundColor="#0A0A0A"
+                    Padding="8">
                 <Grid ColumnDefinitions="*, *">
-                    <Button Grid.Column="0" Text="Save" BackgroundColor="Transparent" TextColor="{StaticResource WhiteColor}" FontAttributes="Bold" FontSize="16" HeightRequest="48" />
-                    <Button Grid.Column="1" Text="Charge" BackgroundColor="{StaticResource LoginColor}" TextColor="{StaticResource WhiteColor}" CornerRadius="24" FontAttributes="Bold" FontSize="16" HeightRequest="48" />
+                    <Button Grid.Column="0"
+                            Text="View Cart"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource WhiteColor}"
+                            FontAttributes="Bold" FontSize="16"
+                            HeightRequest="48"
+                            Command="{Binding GoToCartCommand}" />
+                    <Button Grid.Column="1"
+                            Text="Charge"
+                            BackgroundColor="{StaticResource LoginColor}"
+                            TextColor="{StaticResource WhiteColor}"
+                            CornerRadius="24"
+                            FontAttributes="Bold" FontSize="16"
+                            HeightRequest="48"
+                            Command="{Binding GoToCartCommand}" />
                 </Grid>
             </Border>
         </Grid>
-
-
-
-
-        <!-- 
-    DASHBOARD NOTES (FOR FUTURE IMPLEMENTATION)
-
-    This dashboard UI is currently static. When integrating with the SQL database,
-    the following behaviors should be implemented:
-
-    1. Product Cards
-       - Populate product cards dynamically using a loop (e.g., foreach / for loop).
-       - The number of cards displayed should automatically match the number of products
-         retrieved from the database.
-
-    2. Cart Indicator
-       - The cart icon should display the number of items currently added to the cart.
-       - This value should update dynamically as products are added or removed.
-
-    3. Logout Notification
-       - The logout button will include a small red notification dot above it.
-       - This will alert the user when their session time is about to expire.
-
-    4. Product Search
-       - The search bar should filter and display products based on the user’s input.
-
-    5. Charge Button
-       - The "Charge" action will send the selected products to the cart for checkout.
-
-    6. Save Button
-       - The current "Save" function will be removed and replaced with another feature
-         to be determined later.
-
-    NOTE:
-    These features will be implemented once SQL integration and product data retrieval
-    are completed.
--->
-
-
-
-
 
     </Grid>
 </ContentPage>

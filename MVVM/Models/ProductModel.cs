@@ -43,5 +43,11 @@ namespace SAMWELLPOS.MVVM.Models
         public Color StockColor => Quantity <= 5
             ? Color.FromArgb("#EF5350")   // ErrorColor — low stock
             : Color.FromArgb("#66BB6A");  // SuccessColor — healthy stock
+
+        [Ignore]
+        public int CartQuantity { get; set; } = 0;
+
+        [Ignore]
+        public string CartQuantityDisplay => CartQuantity.ToString();
     }
 }
