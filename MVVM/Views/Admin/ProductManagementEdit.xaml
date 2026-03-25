@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAMWELLPOS.MVVM.Views.Admin.ProductManagementEdit"
+             Title="Edit Product"
+             BackgroundColor="{StaticResource AppBackgroundColor}">
+
+    <Grid RowDefinitions="Auto, *" Padding="24">
+
+        <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Margin="0,0,0,24">
+            <Label Text="Edit Product" Style="{StaticResource HeaderLabelStyle}" FontSize="24" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+            <Border Style="{StaticResource CardBorderStyle}" HorizontalOptions="Fill" VerticalOptions="Start">
+                <VerticalStackLayout Spacing="20">
+
+                    <!-- Info notice -->
+                    <Border BackgroundColor="{StaticResource InputBackgroundColor}"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="0"
+                            Padding="16,12">
+                        <Label Text="ℹ️  Only name, price and quantity can be edited here. Use Details to view full product info."
+                               TextColor="{StaticResource TextLightColor}"
+                               FontSize="12"
+                               LineBreakMode="WordWrap" />
+                    </Border>
+
+                    <!-- Name -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="PRODUCT NAME" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Style="{StaticResource InputEntryStyle}"
+                                   Text="{Binding Name}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Price -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="PRICE (₱)" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Style="{StaticResource InputEntryStyle}"
+                                   Keyboard="Numeric"
+                                   Text="{Binding Price}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Quantity -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="STOCK QUANTITY" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Style="{StaticResource InputEntryStyle}"
+                                   Keyboard="Numeric"
+                                   Text="{Binding Quantity}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Error -->
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="{StaticResource ErrorColor}"
+                           FontSize="13" HorizontalOptions="Center"
+                           IsVisible="{Binding HasError}" />
+
+                    <!-- Save Button -->
+                    <Button Text="Save Changes"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding SaveChangesCommand}"
+                            Margin="0,20,0,0" />
+
+                    <!-- Cancel -->
+                    <Label Text="Cancel"
+                           TextColor="{StaticResource TextLightColor}"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           Margin="0,15,0,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CancelCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </VerticalStackLayout>
+            </Border>
+        </ScrollView>
+    </Grid>
+</ContentPage>

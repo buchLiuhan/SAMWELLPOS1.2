@@ -2,18 +2,34 @@
 using CommunityToolkit.Mvvm.Input;
 using SAMWELLPOS.MVVM.Models;
 using SAMWELLPOS.Services;
+using System.Text.RegularExpressions;
 
 namespace SAMWELLPOS.MVVM.ViewModels
 {
-    // "partial" is required for the CommunityToolkit magic to work
     public partial class RegistrationViewModel : ObservableObject
     {
         private readonly DatabaseService _dbService;
 
-        [ObservableProperty] private string? _fullName;
-        [ObservableProperty] private string? _email;
-        [ObservableProperty] private string? _password;
-        [ObservableProperty] private string? _confirmPassword;
+        [ObservableProperty]
+        private string? _fullName;
+
+        [ObservableProperty]
+        private string? _username;
+
+        [ObservableProperty]
+        private string? _email;
+
+        [ObservableProperty]
+        private string? _password;
+
+        [ObservableProperty]
+        private string? _confirmPassword;
+
+        [ObservableProperty]
+        private string _errorMessage = string.Empty;
+
+        [ObservableProperty]
+        private bool _hasError = false;
 
         public RegistrationViewModel(DatabaseService dbService)
         {
@@ -23,53 +39,116 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [RelayCommand]
         public async Task Register()
         {
-            // 1. Thorough Validation Logic
-            if (string.IsNullOrWhiteSpace(FullName) || string.IsNullOrWhiteSpace(Email) ||
-                string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(ConfirmPassword))
+            HasError = false;
+            ErrorMessage = string.Empty;
+
+            // Field-specific validation
+            if (string.IsNullOrWhiteSpace(FullName))
             {
-                await Shell.Current.DisplayAlert("Wait!", "You gotta fill everything out, G.", "My Bad");
+                ErrorMessage = "Full name is required.";
+                HasError = true;
                 return;
             }
 
-            // 2. Password Match Check (The UX Safety Net)
+            if (string.IsNullOrWhiteSpace(Username))
+            {
+                ErrorMessage = "Username is required.";
+                HasError = true;
+                return;
+            }
+
+            if (Username!.Trim().Length < 3)
+            {
+                ErrorMessage = "Username must be at least 3 characters.";
+                HasError = true;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                ErrorMessage = "Email address is required.";
+                HasError = true;
+                return;
+            }
+
+            if (!Regex.IsMatch(Email!, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                ErrorMessage = "Please enter a valid email address.";
+                HasError = true;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "Password is required.";
+                HasError = true;
+                return;
+            }
+
+            if (Password!.Length < 6)
+            {
+                ErrorMessage = "Password must be at least 6 characters.";
+                HasError = true;
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(ConfirmPassword))
+            {
+                ErrorMessage = "Please confirm your password.";
+                HasError = true;
+                return;
+            }
+
             if (Password != ConfirmPassword)
             {
-                await Shell.Current.DisplayAlert("Error", "Passwords don't match! Check your typing.", "Try Again");
+                ErrorMessage = "Passwords do not match. Please check and try again.";
+                HasError = true;
                 return;
             }
 
-            // 3. KING MOVE: Check if this is the first user in the system
+            // Duplicate username check
+            var existingUsername = await _dbService.GetUserByUsername(Username.Trim());
+            if (existingUsername is not null)
+            {
+                ErrorMessage = "That username is already taken. Please choose another.";
+                HasError = true;
+                return;
+            }
+
+            // Duplicate email check
+            var existingEmail = await _dbService.GetUserByEmail(Email.Trim());
+            if (existingEmail is not null)
+            {
+                ErrorMessage = "An account with that email already exists.";
+                HasError = true;
+                return;
+            }
+
+            // First user gets Admin + auto-approved
             var users = await _dbService.GetUsers();
             bool isFirstUser = users.Count == 0;
 
-            // 4. Map the data to our Model
             var newUser = new UserModel
             {
-                FullName = FullName,
-                Email = Email ?? string.Empty,
+                FullName = FullName!.Trim(),
+                Username = Username.Trim(),
+                Email = Email.Trim(),
                 Password = Password,
-                Role = isFirstUser ? "Admin" : "Cashier", // First user gets the crown
-                IsApproved = isFirstUser                  // First user is auto-vouched
+                Role = isFirstUser ? "Admin" : "Cashier",
+                IsApproved = isFirstUser
             };
 
-            // 5. Save to SQLite
             await _dbService.AddUser(newUser);
 
-            string alertMsg = isFirstUser
-                ? "First user detected! Admin access granted. You're the boss now."
-                : "Account created! Now wait for the Admin to approve you.";
+            string successMsg = isFirstUser
+                ? "You are the first user — Admin access has been granted and your account is approved automatically."
+                : "Account created successfully. Please wait for an administrator to approve your account before logging in.";
 
-            await Shell.Current.DisplayAlert("LFG!", alertMsg, "Bet");
-
-            // 6. Navigate back to Login
+            await Shell.Current.DisplayAlert("Registration Successful", successMsg, "OK");
             await Shell.Current.GoToAsync("..");
         }
 
         [RelayCommand]
-        public async Task GoToLogin()
-        {
-            // Quickly pop back to the Login screen
-            await Shell.Current.GoToAsync("..");
-        }
+        public async Task GoToLogin() => await Shell.Current.GoToAsync("..");
     }
 }

@@ -1,12 +1,163 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SAMWELLPOS.MVVM.Models"
              x:Class="SAMWELLPOS.MVVM.Views.Admin.ProductManagement"
-             Title="ProductManagement">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Product Management"
+             BackgroundColor="{StaticResource AppBackgroundColor}">
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="16,24,16,0">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,24">
+            <VerticalStackLayout HorizontalOptions="Center">
+                <Image Source="samwelllogo.png" WidthRequest="160" Aspect="AspectFit" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Search + Add -->
+        <Grid Grid.Row="1" ColumnDefinitions="*, Auto" ColumnSpacing="12" Margin="0,0,0,20">
+            <Border Grid.Column="0" Style="{StaticResource InputContainerStyle}" Padding="16,4" Margin="0">
+                <Grid ColumnDefinitions="*, Auto">
+                    <Entry Grid.Column="0"
+                           Placeholder="Search by name, category or ID..."
+                           Style="{StaticResource InputEntryStyle}"
+                           Text="{Binding SearchText}" />
+                    <Image Grid.Column="1"
+                           Source="{StaticResource IconSearch}"
+                           WidthRequest="22" HeightRequest="22"
+                           VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="1" Style="{StaticResource PillBorderStyle}"
+                    BackgroundColor="{StaticResource LoginColor}" Padding="16,0">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NavigateToCreateCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="+ Add" Style="{StaticResource PillLabelStyle}"
+                       TextColor="{StaticResource WhiteColor}" />
+            </Border>
+        </Grid>
+
+        <!-- Product Cards -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding FilteredProducts}"
+                        VerticalScrollBarVisibility="Never">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:ProductModel">
+                    <Border Style="{StaticResource ProductCardStyle}" Padding="8" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="64, *, Auto" ColumnSpacing="12">
+
+                            <!-- Product Image or Initials -->
+                            <Grid Grid.Column="0" WidthRequest="64" HeightRequest="64">
+
+                                <Border WidthRequest="64" HeightRequest="64"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        BackgroundColor="{StaticResource LoginColor}"
+                                        IsVisible="{Binding HasImage}">
+                                    <Image Source="{Binding ImagePath}"
+                                           Aspect="AspectFill"
+                                           WidthRequest="64" HeightRequest="64" />
+                                </Border>
+
+                                <Border WidthRequest="64" HeightRequest="64"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        BackgroundColor="{StaticResource LoginColor}"
+                                        IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}">
+                                    <Label Text="{Binding Initials}"
+                                           TextColor="{StaticResource WhiteColor}"
+                                           FontSize="22" FontAttributes="Bold"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+
+                            </Grid>
+
+                            <!-- Name + Price + Stock -->
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                <Label Text="{Binding Name}"
+                                       FontAttributes="Bold" FontSize="14"
+                                       TextColor="{StaticResource WhiteColor}"
+                                       LineBreakMode="TailTruncation"
+                                       MaxLines="1" />
+                                <Label Text="{Binding PriceDisplay}"
+                                       FontSize="13" FontAttributes="Bold"
+                                       TextColor="{StaticResource LoginColor}" />
+                                <Label Text="{Binding StockDisplay}"
+                                       FontSize="11" FontAttributes="Bold"
+                                       TextColor="{Binding StockColor}" />
+                            </VerticalStackLayout>
+
+                            <!-- Action Buttons -->
+                            <VerticalStackLayout Grid.Column="2"
+                                                 VerticalOptions="Center"
+                                                 Spacing="6"
+                                                 WidthRequest="64">
+
+                                <!-- Edit -->
+                                <Border BackgroundColor="{StaticResource LoginColor}"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0"
+                                        Padding="0,7">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.NavigateToEditCommand}"
+                                            CommandParameter="{Binding Id}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="Edit"
+                                           FontSize="11" FontAttributes="Bold"
+                                           TextColor="{StaticResource WhiteColor}"
+                                           HorizontalOptions="Center" />
+                                </Border>
+
+                                <!-- Details -->
+                                <Border BackgroundColor="{StaticResource SecondaryColor}"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0"
+                                        Padding="0,7">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.NavigateToDetailsCommand}"
+                                            CommandParameter="{Binding Id}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="Details"
+                                           FontSize="11" FontAttributes="Bold"
+                                           TextColor="{StaticResource WhiteColor}"
+                                           HorizontalOptions="Center" />
+                                </Border>
+
+                                <!-- Delete -->
+                                <Border BackgroundColor="{StaticResource MutedError2}"
+                                        StrokeShape="RoundRectangle 8"
+                                        StrokeThickness="0"
+                                        Padding="0,7">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.DeleteProductCommand}"
+                                            CommandParameter="{Binding Id}" />
+                                    </Border.GestureRecognizers>
+                                    <Label Text="Delete"
+                                           FontSize="11" FontAttributes="Bold"
+                                           TextColor="{StaticResource WhiteColor}"
+                                           HorizontalOptions="Center" />
+                                </Border>
+
+                            </VerticalStackLayout>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.Footer>
+                <BoxView HeightRequest="24" Color="Transparent" />
+            </CollectionView.Footer>
+
+        </CollectionView>
+
+    </Grid>
 </ContentPage>

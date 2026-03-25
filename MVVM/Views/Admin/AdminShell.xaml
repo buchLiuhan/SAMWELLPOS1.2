@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:admin="clr-namespace:SAMWELLPOS.MVVM.Views.Admin"
+       x:Class="SAMWELLPOS.MVVM.Views.Admin.AdminShell"
+       Shell.TabBarBackgroundColor="#1A1A1A"
+       Shell.TabBarUnselectedColor="#586F7C"
+       Shell.TabBarForegroundColor="#0f4c5c"
+       Shell.TabBarTitleColor="#F4F4F9"
+       Shell.NavBarIsVisible="False">
+
+    <TabBar>
+
+        <!-- Tab 1: Users -->
+        <Tab Title="Users" Icon="usericon.png">
+            <ShellContent ContentTemplate="{DataTemplate admin:User_Management}"
+                          Route="UserManagement" />
+        </Tab>
+
+        <!-- Tab 2: Products (placeholder page for now) -->
+        <Tab Title="Products" Icon="product.png">
+            <ShellContent ContentTemplate="{DataTemplate admin:ProductManagement}"
+                          Route="ProductManagement" />
+        </Tab>
+
+        <!-- Tab 3: Reports (placeholder page for now) -->
+        <Tab Title="Reports" Icon="reports.png">
+            <ShellContent ContentTemplate="{DataTemplate admin:Reports}"
+                          Route="Reports" />
+        </Tab>
+
+    </TabBar>
+
+</Shell>

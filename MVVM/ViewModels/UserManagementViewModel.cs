@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using SAMWELLPOS.MVVM.Models;
 using SAMWELLPOS.Services;
 using System.Collections.ObjectModel;
+using SAMWELLPOS.MVVM.Views;
 
 
 namespace SAMWELLPOS.MVVM.ViewModels
@@ -66,6 +67,8 @@ namespace SAMWELLPOS.MVVM.ViewModels
             if (!confirmed) return;
 
             // Navigate back to login and clear the back stack
+            var appShell = IPlatformApplication.Current!.Services.GetRequiredService<AppShell>();
+            App.Current!.MainPage = appShell;
             await Shell.Current.GoToAsync("//Login");
         }
     }

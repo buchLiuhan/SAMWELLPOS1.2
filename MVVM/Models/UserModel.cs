@@ -19,6 +19,9 @@ namespace SAMWELLPOS.MVVM.Models
         [Unique]
         public string? Email { get; set; }
 
+        [Unique]
+        public string? Username { get; set; }
+
         public string? FullName { get; set; }
 
         public string? Password { get; set; }

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAMWELLPOS.MVVM.Views.Admin.ProductManagementDetails"
+             Title="Product Details"
+             BackgroundColor="{StaticResource AppBackgroundColor}">
+
+    <Grid RowDefinitions="Auto, *" Padding="24">
+
+        <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Margin="0,0,0,24">
+            <Label Text="Product Details" Style="{StaticResource HeaderLabelStyle}" FontSize="24" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+            <Border Style="{StaticResource CardBorderStyle}" HorizontalOptions="Fill" VerticalOptions="Start">
+                <VerticalStackLayout Spacing="20">
+
+                    <!-- Product Image -->
+                    <Grid HorizontalOptions="Center" Margin="0,10,0,10">
+
+                        <!-- Actual image -->
+                        <Border WidthRequest="140" HeightRequest="140"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0"
+                                BackgroundColor="{StaticResource LoginColor}"
+                                IsVisible="{Binding HasImage}">
+                            <Image Source="{Binding ImagePath}"
+                                   Aspect="AspectFill"
+                                   WidthRequest="140" HeightRequest="140" />
+                        </Border>
+
+                        <!-- Placeholder -->
+                        <Border WidthRequest="140" HeightRequest="140"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0"
+                                BackgroundColor="{StaticResource LoginColor}"
+                                IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}">
+                            <Label Text="📦" FontSize="56"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                    </Grid>
+
+                    <!-- Product ID badge -->
+                    <Border BackgroundColor="{StaticResource InputBackgroundColor}"
+                            StrokeShape="RoundRectangle 20"
+                            StrokeThickness="0"
+                            Padding="16,8"
+                            HorizontalOptions="Center">
+                        <Label Text="{Binding ProductIdDisplay}"
+                               TextColor="{StaticResource TextLightColor}"
+                               FontSize="12" FontAttributes="Bold"
+                               CharacterSpacing="1.5" />
+                    </Border>
+
+                    <!-- Divider -->
+                    <BoxView HeightRequest="1" Color="#2A2A2C" HorizontalOptions="Fill" />
+
+                    <!-- Name -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="PRODUCT NAME" Style="{StaticResource InputLabelStyle}" />
+                        <Label Text="{Binding Name}"
+                               FontAttributes="Bold" FontSize="18"
+                               TextColor="{StaticResource WhiteColor}" />
+                    </VerticalStackLayout>
+
+                    <!-- Price + Stock row -->
+                    <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+
+                        <Border Grid.Column="0"
+                                BackgroundColor="{StaticResource InputBackgroundColor}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="0"
+                                Padding="16,12">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="PRICE" Style="{StaticResource InputLabelStyle}" />
+                                <Label Text="{Binding PriceDisplay}"
+                                       FontAttributes="Bold" FontSize="16"
+                                       TextColor="{StaticResource LoginColor}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="1"
+                                BackgroundColor="{StaticResource InputBackgroundColor}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="0"
+                                Padding="16,12">
+                            <VerticalStackLayout Spacing="4">
+                                <Label Text="STOCK" Style="{StaticResource InputLabelStyle}" />
+                                <Label Text="{Binding StockDisplay}"
+                                       FontAttributes="Bold" FontSize="16"
+                                       TextColor="{Binding StockColor}" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                    </Grid>
+
+                    <!-- Category -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="CATEGORY" Style="{StaticResource InputLabelStyle}" />
+                        <Border BackgroundColor="{StaticResource InputBackgroundColor}"
+                                StrokeShape="RoundRectangle 20"
+                                StrokeThickness="0"
+                                Padding="14,8"
+                                HorizontalOptions="Start">
+                            <Label Text="{Binding Category}"
+                                   TextColor="{StaticResource WhiteColor}"
+                                   FontSize="13" FontAttributes="Bold" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Description -->
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="DESCRIPTION" Style="{StaticResource InputLabelStyle}" />
+                        <Border BackgroundColor="{StaticResource InputBackgroundColor}"
+                                StrokeShape="RoundRectangle 12"
+                                StrokeThickness="0"
+                                Padding="16,12">
+                            <Label Text="{Binding Description}"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   FontSize="14"
+                                   LineBreakMode="WordWrap" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Divider -->
+                    <BoxView HeightRequest="1" Color="#2A2A2C" HorizontalOptions="Fill" />
+
+                    <!-- Edit Button -->
+                    <Button Text="Edit Product"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding NavigateToEditCommand}"
+                            Margin="0,10,0,0" />
+
+                    <!-- Back -->
+                    <Label Text="Go Back"
+                           TextColor="{StaticResource TextLightColor}"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           Margin="0,15,0,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </VerticalStackLayout>
+            </Border>
+        </ScrollView>
+    </Grid>
+</ContentPage>

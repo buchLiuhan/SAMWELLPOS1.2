@@ -26,7 +26,9 @@ namespace SAMWELLPOS.Services
             _db = new SQLiteAsyncConnection(dbPath);
 
             // This is the "Magic Line" that reads your UserModel and builds the table
+
             await _db.CreateTableAsync<UserModel>();
+            await _db.CreateTableAsync<ProductModel>(); // ← add this line here
         }
 
         // --- USER OPERATIONS ---
@@ -49,6 +51,14 @@ namespace SAMWELLPOS.Services
             return await _db!.Table<UserModel>().Where(u => u.Email == email).FirstOrDefaultAsync();
         }
 
+        public async Task<UserModel> GetUserByUsername(string username)
+        {
+            await Init();
+            return await _db!.Table<UserModel>()
+                .Where(u => u.Username == username)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<int> UpdateUser(UserModel user)
         {
             await Init();
@@ -65,6 +75,38 @@ namespace SAMWELLPOS.Services
         {
             await Init();
             return await _db!.Table<UserModel>().Where(u => u.Id == id).FirstOrDefaultAsync();
+        }
+
+        // --- PRODUCT OPERATIONS ---
+
+        public async Task<int> AddProduct(ProductModel product)
+        {
+            await Init();
+            return await _db!.InsertAsync(product);
+        }
+
+        public async Task<List<ProductModel>> GetProducts()
+        {
+            await Init();
+            return await _db!.Table<ProductModel>().ToListAsync();
+        }
+
+        public async Task<ProductModel> GetProductById(int id)
+        {
+            await Init();
+            return await _db!.Table<ProductModel>().Where(p => p.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<int> UpdateProduct(ProductModel product)
+        {
+            await Init();
+            return await _db!.UpdateAsync(product);
+        }
+
+        public async Task<int> DeleteProduct(ProductModel product)
+        {
+            await Init();
+            return await _db!.DeleteAsync(product);
         }
     }
 }

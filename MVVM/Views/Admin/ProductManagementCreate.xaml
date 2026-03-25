@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SAMWELLPOS.MVVM.Views.Admin.ProductManagementCreate"
+             Title="Add Product"
+             BackgroundColor="{StaticResource AppBackgroundColor}">
+
+    <Grid RowDefinitions="Auto, *" Padding="24">
+
+        <VerticalStackLayout Grid.Row="0" HorizontalOptions="Center" Margin="0,0,0,24">
+            <Label Text="Add New Product" Style="{StaticResource HeaderLabelStyle}" FontSize="24" />
+        </VerticalStackLayout>
+
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+            <Border Style="{StaticResource CardBorderStyle}" HorizontalOptions="Fill" VerticalOptions="Start">
+                <VerticalStackLayout Spacing="20">
+
+                    <!-- Product Image -->
+                    <Grid HorizontalOptions="Center" Margin="0,10,0,20">
+
+                        <!-- Image preview -->
+                        <Border WidthRequest="120" HeightRequest="120"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0"
+                                BackgroundColor="{StaticResource LoginColor}"
+                                IsVisible="{Binding HasImage}">
+                            <Image Source="{Binding ImagePath}"
+                                   Aspect="AspectFill"
+                                   WidthRequest="120" HeightRequest="120" />
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickImageCommand}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+
+                        <!-- Placeholder -->
+                        <Border WidthRequest="120" HeightRequest="120"
+                                StrokeShape="RoundRectangle 16"
+                                StrokeThickness="0"
+                                BackgroundColor="{StaticResource LoginColor}"
+                                IsVisible="{Binding HasImage, Converter={StaticResource InverseBoolConverter}}">
+                            <Label Text="📦" FontSize="48"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickImageCommand}" />
+                            </Border.GestureRecognizers>
+                        </Border>
+
+                        <!-- Add Photo pill -->
+                        <Border Margin="0,0,0,-8" VerticalOptions="End" HorizontalOptions="Center"
+                                Style="{StaticResource PillBorderStyle}"
+                                BackgroundColor="#D91c1c1c" Padding="12,6">
+                            <Label Text="Add Photo" FontSize="11" FontAttributes="Bold"
+                                   TextColor="{StaticResource WhiteColor}"
+                                   HorizontalOptions="Center" />
+                        </Border>
+                    </Grid>
+
+                    <!-- Name -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="PRODUCT NAME" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="e.g. Chicken Burger"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Text="{Binding Name}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Description -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="DESCRIPTION" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}" Padding="16,8">
+                            <Editor Placeholder="e.g. Grilled chicken with lettuce..."
+                                    TextColor="{StaticResource WhiteColor}"
+                                    PlaceholderColor="#7A8B99"
+                                    BackgroundColor="Transparent"
+                                    FontSize="15"
+                                    AutoSize="TextChanges"
+                                    MinimumHeightRequest="60"
+                                    Text="{Binding Description}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Category -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="CATEGORY" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Picker Title="Select a category"
+                                    TextColor="{StaticResource WhiteColor}"
+                                    TitleColor="#7A8B99"
+                                    Margin="0,4" FontSize="15"
+                                    ItemsSource="{Binding Categories}"
+                                    SelectedItem="{Binding Category}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Price -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="PRICE (₱)" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="e.g. 199.00"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Keyboard="Numeric"
+                                   Text="{Binding Price}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Quantity -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="STOCK QUANTITY" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="e.g. 50"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Keyboard="Numeric"
+                                   Text="{Binding Quantity}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Error -->
+                    <Label Text="{Binding ErrorMessage}"
+                           TextColor="{StaticResource ErrorColor}"
+                           FontSize="13" HorizontalOptions="Center"
+                           IsVisible="{Binding HasError}" />
+
+                    <!-- Create Button -->
+                    <Button Text="Add Product"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding CreateProductCommand}"
+                            Margin="0,20,0,0" />
+
+                    <!-- Cancel -->
+                    <Label Text="Cancel"
+                           TextColor="{StaticResource TextLightColor}"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           Margin="0,15,0,0">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CancelCommand}" />
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </VerticalStackLayout>
+            </Border>
+        </ScrollView>
+    </Grid>
+</ContentPage>

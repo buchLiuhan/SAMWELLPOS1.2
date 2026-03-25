@@ -19,48 +19,76 @@
                     <VerticalStackLayout Spacing="8">
                         <Label Text="FULL NAME" Style="{StaticResource InputLabelStyle}" />
                         <Border Style="{StaticResource InputContainerStyle}">
-                            <Entry Text="{Binding FullName}" 
-                                   Placeholder="John Doe" 
-                                   Style="{StaticResource InputEntryStyle}" />
+                            <Entry Text="{Binding FullName}"
+                       Placeholder="e.g. John Dela Cruz"
+                       Style="{StaticResource InputEntryStyle}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="USERNAME" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Text="{Binding Username}"
+                       Placeholder="e.g. john_doe"
+                       Style="{StaticResource InputEntryStyle}" />
                         </Border>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="8">
                         <Label Text="EMAIL ADDRESS" Style="{StaticResource InputLabelStyle}" />
                         <Border Style="{StaticResource InputContainerStyle}">
-                            <Entry Text="{Binding Email}" 
-                                   Placeholder="admin@samwell.com" 
-                                   Keyboard="Email" 
-                                   Style="{StaticResource InputEntryStyle}" />
+                            <Entry Text="{Binding Email}"
+                       Placeholder="e.g. john@samwell.com"
+                       Keyboard="Email"
+                       Style="{StaticResource InputEntryStyle}" />
                         </Border>
                     </VerticalStackLayout>
 
                     <VerticalStackLayout Spacing="8">
                         <Label Text="PASSWORD" Style="{StaticResource InputLabelStyle}" />
                         <Border Style="{StaticResource InputContainerStyle}">
-                            <Entry Text="{Binding Password}" 
-                                   Placeholder="••••••••" 
-                                   IsPassword="True" 
-                                   Style="{StaticResource InputEntryStyle}" />
+                            <Entry Text="{Binding Password}"
+                       Placeholder="••••••••"
+                       IsPassword="True"
+                       Style="{StaticResource InputEntryStyle}" />
                         </Border>
 
                         <Label Text="CONFIRM PASSWORD" Style="{StaticResource InputLabelStyle}" />
                         <Border Style="{StaticResource InputContainerStyle}">
-                            <Entry Text="{Binding ConfirmPassword}" 
-                                   Placeholder="••••••••" 
-                                   IsPassword="True" 
-                                   Style="{StaticResource InputEntryStyle}" />
+                            <Entry Text="{Binding ConfirmPassword}"
+                       Placeholder="••••••••"
+                       IsPassword="True"
+                       Style="{StaticResource InputEntryStyle}" />
                         </Border>
                     </VerticalStackLayout>
 
-                    <Button Text="Sign Up" 
-                            Command="{Binding RegisterCommand}"
-                            Style="{StaticResource PrimaryButtonStyle}" 
-                            Margin="0,15,0,0" />
+                    <!-- Inline error -->
+                    <Border BackgroundColor="{StaticResource MutedError2}"
+                StrokeShape="RoundRectangle 10"
+                StrokeThickness="0"
+                Padding="14,10"
+                IsVisible="{Binding HasError}">
+                        <Label Text="{Binding ErrorMessage}"
+                   TextColor="{StaticResource WhiteColor}"
+                   FontSize="13"
+                   LineBreakMode="WordWrap" />
+                    </Border>
 
-                    <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Margin="0,10,0,0" Spacing="5">
-                        <Label Text="Already have an account?" TextColor="{StaticResource TextLightColor}" VerticalOptions="Center"/>
-                        <Label Text="Login" TextColor="{StaticResource LoginColor}" FontAttributes="Bold" TextDecorations="Underline" VerticalOptions="Center">
+                    <Button Text="Sign Up"
+                Command="{Binding RegisterCommand}"
+                Style="{StaticResource PrimaryButtonStyle}"
+                Margin="0,15,0,0" />
+
+                    <HorizontalStackLayout VerticalOptions="Center" HorizontalOptions="Center"
+                               Margin="0,10,0,0" Spacing="5">
+                        <Label Text="Already have an account?"
+                   TextColor="{StaticResource TextLightColor}"
+                   VerticalOptions="Center" />
+                        <Label Text="Login"
+                   TextColor="{StaticResource LoginColor}"
+                   FontAttributes="Bold"
+                   TextDecorations="Underline"
+                   VerticalOptions="Center">
                             <Label.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding GoToLoginCommand}" />
                             </Label.GestureRecognizers>
