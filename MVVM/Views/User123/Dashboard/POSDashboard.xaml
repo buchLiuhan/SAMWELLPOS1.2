@@ -74,9 +74,7 @@
                 <ScrollView Orientation="Horizontal"
                             HorizontalScrollBarVisibility="Never"
                             Margin="-16,0">
-                    <BindableLayout.ItemsSource>
-                        <Binding Path="Categories" />
-                    </BindableLayout.ItemsSource>
+                    
                     <HorizontalStackLayout x:Name="CategoryPills"
                                            Spacing="12" Padding="16,0"
                                            BindableLayout.ItemsSource="{Binding Categories}">

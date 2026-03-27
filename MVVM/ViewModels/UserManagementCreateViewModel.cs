@@ -9,6 +9,10 @@ namespace SAMWELLPOS.MVVM.ViewModels
     {
         private readonly DatabaseService _db;
 
+
+        [ObservableProperty]
+        private string _username = string.Empty;
+
         [ObservableProperty]
         private string _fullName = string.Empty;
 
@@ -50,6 +54,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
             HasError = false;
 
             if (string.IsNullOrWhiteSpace(FullName) ||
+                string.IsNullOrWhiteSpace(Username) ||
                 string.IsNullOrWhiteSpace(Email) ||
                 string.IsNullOrWhiteSpace(Password))
             {
@@ -58,8 +63,18 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 return;
             }
 
-            var existing = await _db.GetUserByEmail(Email.Trim());
-            if (existing is not null)
+            // Check duplicate username
+            var existingUsername = await _db.GetUserByUsername(Username.Trim());
+            if (existingUsername is not null)
+            {
+                ErrorMessage = "That username is already taken.";
+                HasError = true;
+                return;
+            }
+
+            // Check duplicate email
+            var existingEmail = await _db.GetUserByEmail(Email.Trim());
+            if (existingEmail is not null)
             {
                 ErrorMessage = "An account with that email already exists.";
                 HasError = true;
@@ -69,11 +84,12 @@ namespace SAMWELLPOS.MVVM.ViewModels
             var newUser = new UserModel
             {
                 FullName = FullName.Trim(),
+                Username = Username.Trim(),
                 Email = Email.Trim(),
                 Password = Password,
                 Role = SelectedRole,
                 IsApproved = IsApproved,
-                ProfilePicturePath = ProfilePicturePath  // ← add this line
+                ProfilePicturePath = ProfilePicturePath
             };
 
             await _db.AddUser(newUser);

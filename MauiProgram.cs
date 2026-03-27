@@ -59,6 +59,7 @@ namespace SAMWELLPOS
             builder.Services.AddTransient<User_ManagementEdit>();
             builder.Services.AddTransient<ProductManagement>();
             builder.Services.AddTransient<Reports>();
+           
             builder.Services.AddTransient<AdminShell>();
             builder.Services.AddTransient<ProductManagementViewModel>();
             builder.Services.AddTransient<ProductManagementCreateViewModel>();

@@ -67,9 +67,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
             if (!confirmed) return;
 
             // Navigate back to login and clear the back stack
-            var appShell = IPlatformApplication.Current!.Services.GetRequiredService<AppShell>();
-            App.Current!.MainPage = appShell;
-            await Shell.Current.GoToAsync("//Login");
+            App.Current!.MainPage = new AppShell();
         }
     }
 }

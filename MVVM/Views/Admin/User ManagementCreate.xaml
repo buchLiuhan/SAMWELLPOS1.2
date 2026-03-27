@@ -69,6 +69,16 @@
                         </Border>
                     </VerticalStackLayout>
 
+                    <!-- Username --> 
+                    <VerticalStackLayout Spacing="8">
+                            <Label Text="USERNAME" Style="{StaticResource InputLabelStyle}" />
+                            <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="e.g. john_doe"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Text="{Binding Username}" />
+                        </Border>
+                    </VerticalStackLayout>
+
                     <!-- Email -->
                     <VerticalStackLayout Spacing="8">
                         <Label Text="EMAIL ADDRESS" Style="{StaticResource InputLabelStyle}" />

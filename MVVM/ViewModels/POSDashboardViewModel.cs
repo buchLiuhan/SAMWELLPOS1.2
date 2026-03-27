@@ -125,10 +125,9 @@ namespace SAMWELLPOS.MVVM.ViewModels
             if (!confirmed) return;
 
             _cart.Clear();
-            var appShell = IPlatformApplication.Current!.Services
-                .GetRequiredService<AppShell>();
-            App.Current!.MainPage = appShell;
-            await Shell.Current.GoToAsync("//Login");
+
+            _cart.Clear();
+            App.Current!.MainPage = new AppShell();
         }
 
         [RelayCommand]
