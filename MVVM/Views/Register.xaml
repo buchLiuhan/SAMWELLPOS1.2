@@ -13,6 +13,50 @@
                 <Image Source="samwelllogo.png" WidthRequest="160" Aspect="AspectFit" Margin="0,0,0,10" />
             </VerticalStackLayout>
 
+            <!-- Avatar -->
+            <Grid HorizontalOptions="Center" Margin="0,0,0,8">
+
+                <!-- Profile photo -->
+                <Border WidthRequest="100" HeightRequest="100"
+            StrokeShape="RoundRectangle 50"
+            StrokeThickness="0"
+            BackgroundColor="{StaticResource LoginColor}"
+            IsVisible="{Binding HasProfilePicture}">
+                    <Image Source="{Binding ProfilePicturePath}"
+               Aspect="AspectFill"
+               WidthRequest="100" HeightRequest="100" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PickPhotoCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <!-- Placeholder -->
+                <Border WidthRequest="100" HeightRequest="100"
+            StrokeShape="RoundRectangle 50"
+            StrokeThickness="0"
+            BackgroundColor="{StaticResource LoginColor}"
+            IsVisible="{Binding HasProfilePicture, Converter={StaticResource InverseBoolConverter}}">
+                    <Label Text="+" TextColor="{StaticResource WhiteColor}"
+               FontSize="40" FontAttributes="Bold"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Margin="0,-4,0,0" />
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PickPhotoCommand}" />
+                    </Border.GestureRecognizers>
+                </Border>
+
+                <!-- Pill -->
+                <Border Margin="0,0,0,-8" VerticalOptions="End" HorizontalOptions="Center"
+            Style="{StaticResource PillBorderStyle}"
+            BackgroundColor="#D91c1c1c" Padding="12,6">
+                    <Label Text="Add Photo" FontSize="11" FontAttributes="Bold"
+               TextColor="{StaticResource WhiteColor}"
+               HorizontalOptions="Center" />
+                </Border>
+
+            </Grid>
+
             <Border Style="{StaticResource CardBorderStyle}" HorizontalOptions="Fill">
                 <VerticalStackLayout Spacing="24">
 

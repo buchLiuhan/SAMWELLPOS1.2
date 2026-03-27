@@ -31,6 +31,14 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [ObservableProperty]
         private bool _hasError = false;
 
+
+        [ObservableProperty]
+        private string? _profilePicturePath;
+
+        [ObservableProperty]
+        private bool _hasProfilePicture = false;
+
+
         public RegistrationViewModel(DatabaseService dbService)
         {
             _dbService = dbService;
@@ -135,7 +143,8 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 Email = Email.Trim(),
                 Password = Password,
                 Role = isFirstUser ? "Admin" : "Cashier",
-                IsApproved = isFirstUser
+                IsApproved = isFirstUser,
+                ProfilePicturePath = ProfilePicturePath  // ← add this
             };
 
             await _dbService.AddUser(newUser);
@@ -150,5 +159,32 @@ namespace SAMWELLPOS.MVVM.ViewModels
 
         [RelayCommand]
         public async Task GoToLogin() => await Shell.Current.GoToAsync("..");
+
+        [RelayCommand]
+        private async Task PickPhoto()
+        {
+            try
+            {
+                var result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions
+                {
+                    Title = "Select a profile photo"
+                });
+
+                if (result is null) return;
+
+                var localPath = Path.Combine(FileSystem.AppDataDirectory, $"profile_{Guid.NewGuid()}.jpg");
+                using var stream = await result.OpenReadAsync();
+                using var fileStream = File.OpenWrite(localPath);
+                await stream.CopyToAsync(fileStream);
+
+                ProfilePicturePath = localPath;
+                HasProfilePicture = true;
+            }
+            catch
+            {
+                ErrorMessage = "Could not load photo. Try again.";
+                HasError = true;
+            }
+        }
     }
 }
