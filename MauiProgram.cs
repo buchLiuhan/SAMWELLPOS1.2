@@ -71,6 +71,12 @@ namespace SAMWELLPOS
             builder.Services.AddSingleton<CartService>();  // ← Singleton so cart persists across pages
             builder.Services.AddTransient<POSDashboardViewModel>();
             builder.Services.AddTransient<POSDashboard>();
+            builder.Services.AddTransient<POSCartViewModel>();
+            builder.Services.AddTransient<POSCart>();
+            builder.Services.AddTransient<POSPaymentViewModel>();
+            builder.Services.AddTransient<POSPayment>();
+            builder.Services.AddTransient<POSReceiptViewModel>();
+            builder.Services.AddTransient<POSReceipt>();
 
 
 

@@ -14,6 +14,9 @@
 
             // Cashier/POS side
             Routing.RegisterRoute("POSDashboard", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSDashboard));
+            Routing.RegisterRoute("POSCart", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSCart));
+            Routing.RegisterRoute("POSPayment", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSPayment));
+            Routing.RegisterRoute("POSReceipt", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSReceipt));
         }
     }
 }

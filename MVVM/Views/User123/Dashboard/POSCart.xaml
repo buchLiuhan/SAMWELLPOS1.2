@@ -1,102 +1,212 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SAMWELLPOS.MVVM.Models"
              x:Class="SAMWELLPOS.MVVM.Views.User123.Dashboard.POSCart"
              BackgroundColor="{StaticResource AppBackgroundColor}"
              Shell.NavBarIsVisible="False">
 
     <Grid RowDefinitions="Auto, *, Auto" Padding="16">
 
+        <!-- Header -->
         <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,16">
+
+            <!-- Back -->
             <Border Grid.Column="0" Style="{StaticResource CircularIconBorderStyle}">
-                <Label Text="←" FontSize="20" HorizontalOptions="Center" VerticalOptions="Center" TextColor="White"/>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding BackCommand}"/>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
                 </Border.GestureRecognizers>
+                <Label Text="←" FontSize="20"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       TextColor="{StaticResource WhiteColor}" />
             </Border>
 
-            <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" VerticalOptions="Center">
-                <Label Text="CURRENT TRANSACTION" CharacterSpacing="1" FontSize="11" TextColor="{StaticResource TextLightColor}" HorizontalOptions="Center"/>
-                <Label Text="Invoice #8821" FontAttributes="Bold" FontSize="16" TextColor="White" HorizontalOptions="Center"/>
+            <!-- Title + item count -->
+            <VerticalStackLayout Grid.Column="1"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center">
+                <Label Text="CURRENT TRANSACTION"
+                       CharacterSpacing="1" FontSize="11"
+                       TextColor="{StaticResource TextLightColor}"
+                       HorizontalOptions="Center" />
+                <Label Text="{Binding ItemCountDisplay}"
+                       FontAttributes="Bold" FontSize="16"
+                       TextColor="{StaticResource WhiteColor}"
+                       HorizontalOptions="Center" />
             </VerticalStackLayout>
 
+            <!-- Clear cart -->
             <Border Grid.Column="2" Style="{StaticResource CircularIconBorderStyle}">
-                <Image Source="{StaticResource Trash}" WidthRequest="20" HeightRequest="20" Opacity="0.8"/>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ClearCartCommand}" />
+                </Border.GestureRecognizers>
+                <Image Source="{StaticResource Trash}"
+                       WidthRequest="20" HeightRequest="20"
+                       Opacity="0.8" />
             </Border>
+
         </Grid>
 
+        <!-- Cart Items -->
         <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="10">
 
-                <Border Style="{StaticResource ProductCardStyle}" Padding="8">
-                    <Grid ColumnDefinitions="60, *, Auto" ColumnSpacing="12">
+                <!-- Empty state -->
+                <VerticalStackLayout IsVisible="{Binding HasItems, Converter={StaticResource InverseBoolConverter}}"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Spacing="12"
+                                     Margin="0,60,0,0">
+                    <Label Text="🛒" FontSize="56" HorizontalOptions="Center" />
+                    <Label Text="Your cart is empty"
+                           FontAttributes="Bold" FontSize="16"
+                           TextColor="{StaticResource WhiteColor}"
+                           HorizontalOptions="Center" />
+                    <Label Text="Go back and add some products"
+                           FontSize="13"
+                           TextColor="{StaticResource TextLightColor}"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
 
-                        <Border Grid.Column="0" HeightRequest="60" WidthRequest="60" StrokeShape="RoundRectangle 8" StrokeThickness="0">
-                            <Image Source="samsungs23.png" Aspect="AspectFill" />
-                        </Border>
+                <!-- Item list -->
+                <CollectionView ItemsSource="{Binding CartItems}"
+                                IsVisible="{Binding HasItems}"
+                                VerticalScrollBarVisibility="Never">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:CartItem">
+                            <Border Style="{StaticResource ProductCardStyle}" Padding="8" Margin="0,0,0,10">
+                                <Grid ColumnDefinitions="60, *, Auto" ColumnSpacing="12">
 
-                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                            <Label Text="Samsung S23" FontAttributes="Bold" FontSize="14" TextColor="White" LineBreakMode="NoWrap" />
-                            <Label Text="$799.99" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource LoginColor}" />
-                        </VerticalStackLayout>
+                                    <!-- Product image or initials -->
+                                    <Grid Grid.Column="0" WidthRequest="60" HeightRequest="60">
+                                        <Border WidthRequest="60" HeightRequest="60"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0"
+                                                BackgroundColor="{StaticResource LoginColor}"
+                                                IsVisible="{Binding Product.HasImage}">
+                                            <Image Source="{Binding Product.ImagePath}"
+                                                   Aspect="AspectFill" />
+                                        </Border>
+                                        <Border WidthRequest="60" HeightRequest="60"
+                                                StrokeShape="RoundRectangle 8"
+                                                StrokeThickness="0"
+                                                BackgroundColor="{StaticResource LoginColor}"
+                                                IsVisible="{Binding Product.HasImage, Converter={StaticResource InverseBoolConverter}}">
+                                            <Label Text="{Binding Product.Initials}"
+                                                   TextColor="{StaticResource WhiteColor}"
+                                                   FontSize="18" FontAttributes="Bold"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                                        </Border>
+                                    </Grid>
 
-                        <Border Grid.Column="2" Style="{StaticResource StepperContainerStyle}" VerticalOptions="Center" Padding="2">
-                            <HorizontalStackLayout Spacing="6">
-                                <Border Style="{StaticResource StepperMinusStyle}" WidthRequest="28" HeightRequest="28">
-                                    <Label Text="-" Style="{StaticResource StepperLabelStyle}" FontSize="16" />
-                                </Border>
-                                <Label Text="1" WidthRequest="20" HorizontalTextAlignment="Center" Style="{StaticResource StepperLabelStyle}" FontSize="13" />
-                                <Border Style="{StaticResource StepperPlusStyle}" WidthRequest="28" HeightRequest="28">
-                                    <Label Text="+" Style="{StaticResource StepperLabelStyle}" FontSize="16" />
-                                </Border>
-                            </HorizontalStackLayout>
-                        </Border>
-                    </Grid>
-                </Border>
+                                    <!-- Name + line total -->
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         VerticalOptions="Center"
+                                                         Spacing="2">
+                                        <Label Text="{Binding Product.Name}"
+                                               FontAttributes="Bold" FontSize="14"
+                                               TextColor="{StaticResource WhiteColor}"
+                                               LineBreakMode="TailTruncation"
+                                               MaxLines="1" />
+                                        <Label Text="{Binding Product.PriceDisplay}"
+                                               FontSize="12"
+                                               TextColor="{StaticResource TextLightColor}" />
+                                        <Label FontSize="13" FontAttributes="Bold"
+                                               TextColor="{StaticResource LoginColor}">
+                                            <Label.Text>
+                                                <MultiBinding StringFormat="₱{0:N2}">
+                                                    <Binding Path="LineTotal" />
+                                                </MultiBinding>
+                                            </Label.Text>
+                                        </Label>
+                                    </VerticalStackLayout>
 
-                <Border Style="{StaticResource ProductCardStyle}" Padding="8">
-                    <Grid ColumnDefinitions="60, *, Auto" ColumnSpacing="12">
-                        <Border Grid.Column="0" HeightRequest="60" WidthRequest="60" StrokeShape="RoundRectangle 8" StrokeThickness="0">
-                            <Image Source="samsungs24.png" Aspect="AspectFill" />
-                        </Border>
-                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
-                            <Label Text="Samsung S24" FontAttributes="Bold" FontSize="14" TextColor="White" />
-                            <Label Text="$1,000.00" FontSize="13" FontAttributes="Bold" TextColor="{StaticResource LoginColor}" />
-                        </VerticalStackLayout>
-                        <Border Grid.Column="2" Style="{StaticResource StepperContainerStyle}" VerticalOptions="Center" Padding="2">
-                            <HorizontalStackLayout Spacing="6">
-                                <Border Style="{StaticResource StepperMinusStyle}" WidthRequest="28" HeightRequest="28">
-                                    <Label Text="-" Style="{StaticResource StepperLabelStyle}" FontSize="16" />
-                                </Border>
-                                <Label Text="1" WidthRequest="20" HorizontalTextAlignment="Center" Style="{StaticResource StepperLabelStyle}" FontSize="13" />
-                                <Border Style="{StaticResource StepperPlusStyle}" WidthRequest="28" HeightRequest="28">
-                                    <Label Text="+" Style="{StaticResource StepperLabelStyle}" FontSize="16" />
-                                </Border>
-                            </HorizontalStackLayout>
-                        </Border>
-                    </Grid>
-                </Border>
+                                    <!-- Stepper -->
+                                    <Border Grid.Column="2"
+                                            Style="{StaticResource StepperContainerStyle}"
+                                            VerticalOptions="Center"
+                                            Padding="2">
+                                        <HorizontalStackLayout Spacing="6">
+
+                                            <Border Style="{StaticResource StepperMinusStyle}"
+                                                    WidthRequest="28" HeightRequest="28">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.DecrementCommand}"
+                                                        CommandParameter="{Binding .}" />
+                                                </Border.GestureRecognizers>
+                                                <Label Text="-"
+                                                       Style="{StaticResource StepperLabelStyle}"
+                                                       FontSize="16" />
+                                            </Border>
+
+                                            <Label Text="{Binding Quantity}"
+                                                   WidthRequest="20"
+                                                   HorizontalTextAlignment="Center"
+                                                   Style="{StaticResource StepperLabelStyle}"
+                                                   FontSize="13" />
+
+                                            <Border Style="{StaticResource StepperPlusStyle}"
+                                                    WidthRequest="28" HeightRequest="28">
+                                                <Border.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.IncrementCommand}"
+                                                        CommandParameter="{Binding .}" />
+                                                </Border.GestureRecognizers>
+                                                <Label Text="+"
+                                                       Style="{StaticResource StepperLabelStyle}"
+                                                       FontSize="16" />
+                                            </Border>
+
+                                        </HorizontalStackLayout>
+                                    </Border>
+
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
             </VerticalStackLayout>
         </ScrollView>
 
+        <!-- Footer — totals + payment -->
         <VerticalStackLayout Grid.Row="2" Spacing="10" Padding="0,16,0,8">
+
             <BoxView HeightRequest="1" Color="#333" HorizontalOptions="Fill" />
 
             <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto">
-                <Label Grid.Row="0" Text="Subtotal (2 items)" TextColor="{StaticResource TextLightColor}" FontSize="13"/>
-                <Label Grid.Row="0" Grid.Column="1" Text="$1,799.99" TextColor="White" FontSize="13"/>
+                <Label Grid.Row="0"
+                       Text="{Binding ItemCountDisplay}"
+                       TextColor="{StaticResource TextLightColor}"
+                       FontSize="13" />
+                <Label Grid.Row="0" Grid.Column="1"
+                       Text="{Binding SubtotalDisplay}"
+                       TextColor="{StaticResource WhiteColor}"
+                       FontSize="13" />
 
-                <Label Grid.Row="1" Text="TOTAL TO PAY" FontAttributes="Bold" FontSize="14" TextColor="White" VerticalOptions="Center" Margin="0,10,0,0"/>
-                <Label Grid.Row="1" Grid.Column="1" Text="$1,799.99" FontSize="26" FontAttributes="Bold" TextColor="{StaticResource LoginColor}" Margin="0,10,0,0"/>
+                <Label Grid.Row="1"
+                       Text="TOTAL TO PAY"
+                       FontAttributes="Bold" FontSize="14"
+                       TextColor="{StaticResource WhiteColor}"
+                       VerticalOptions="Center"
+                       Margin="0,10,0,0" />
+                <Label Grid.Row="1" Grid.Column="1"
+                       Text="{Binding TotalDisplay}"
+                       FontSize="26" FontAttributes="Bold"
+                       TextColor="{StaticResource LoginColor}"
+                       Margin="0,10,0,0" />
             </Grid>
 
-            <Button Text="COMPLETE PAYMENT" 
+            <Button Text="COMPLETE PAYMENT"
                     CharacterSpacing="1"
-                    Style="{StaticResource PrimaryButtonStyle}" 
-                    HeightRequest="56" 
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    HeightRequest="56"
                     CornerRadius="12"
-                    Margin="0,8,0,0" />
+                    Margin="0,8,0,0"
+                    Command="{Binding CompletePaymentCommand}" />
+
         </VerticalStackLayout>
 
     </Grid>
