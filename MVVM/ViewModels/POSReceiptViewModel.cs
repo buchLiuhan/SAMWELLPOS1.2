@@ -63,7 +63,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [RelayCommand]
         private async Task NewTransaction()
         {
-            await Shell.Current.GoToAsync("//POSDashboard");
+            await Shell.Current.Navigation.PopToRootAsync();
         }
     }
 }
