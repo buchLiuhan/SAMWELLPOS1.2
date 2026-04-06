@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SAMWELLPOS.MVVM.Models"
+             x:Class="SAMWELLPOS.MVVM.Views.Admin.AdminHistoryDetails"
+             BackgroundColor="{StaticResource AppBackgroundColor}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, *" Padding="24">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *" ColumnSpacing="12" Margin="0,0,0,20">
+            <Border Grid.Column="0" Style="{StaticResource CircularIconBorderStyle}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="←" FontSize="20"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       TextColor="{StaticResource WhiteColor}" />
+            </Border>
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                <Label Text="TRANSACTION DETAILS" CharacterSpacing="1"
+                       FontSize="11" TextColor="{StaticResource TextLightColor}" />
+                <Label Text="{Binding TransactionNumber}"
+                       FontAttributes="Bold" FontSize="15"
+                       TextColor="{StaticResource WhiteColor}" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <ScrollView Grid.Row="1" VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="16">
+
+                <!-- Info Card -->
+                <Border BackgroundColor="#1A1A1A"
+                        StrokeShape="RoundRectangle 16" StrokeThickness="0" Padding="20">
+                    <VerticalStackLayout Spacing="8">
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="Cashier" TextColor="{StaticResource TextLightColor}" FontSize="13" />
+                            <Label Grid.Column="1" Text="{Binding CashierFullName}"
+                                   FontAttributes="Bold" FontSize="13"
+                                   TextColor="{StaticResource WhiteColor}" />
+                        </Grid>
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="Date" TextColor="{StaticResource TextLightColor}" FontSize="13" />
+                            <Label Grid.Column="1" Text="{Binding TransactionDate}"
+                                   FontSize="13" TextColor="{StaticResource WhiteColor}" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Items Card -->
+                <Border BackgroundColor="#1A1A1A"
+                        StrokeShape="RoundRectangle 16" StrokeThickness="0" Padding="20">
+                    <VerticalStackLayout Spacing="0">
+
+                        <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,8">
+                            <Label Grid.Column="0" Text="ITEM" Style="{StaticResource InputLabelStyle}" />
+                            <Label Grid.Column="1" Text="QTY" Style="{StaticResource InputLabelStyle}" Margin="0,0,16,0" />
+                            <Label Grid.Column="2" Text="AMOUNT" Style="{StaticResource InputLabelStyle}" />
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="#2A2A2C" Margin="0,0,0,12" />
+
+                        <CollectionView ItemsSource="{Binding Items}" VerticalScrollBarVisibility="Never">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="models:TransactionItemModel">
+                                    <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,0,0,10">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="1">
+                                            <Label Text="{Binding ProductName}"
+                                                   FontAttributes="Bold" FontSize="13"
+                                                   TextColor="{StaticResource WhiteColor}"
+                                                   LineBreakMode="TailTruncation" MaxLines="1" />
+                                            <Label Text="{Binding PriceDisplay}"
+                                                   FontSize="11" TextColor="{StaticResource TextLightColor}" />
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="1" Text="{Binding Quantity}"
+                                               FontSize="13" TextColor="{StaticResource TextLightColor}"
+                                               HorizontalOptions="Center" VerticalOptions="Center"
+                                               Margin="0,0,16,0" />
+                                        <Label Grid.Column="2" Text="{Binding LineTotalDisplay}"
+                                               FontSize="13" FontAttributes="Bold"
+                                               TextColor="{StaticResource WhiteColor}"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+
+                        <BoxView HeightRequest="1" Color="#2A2A2C" Margin="0,8,0,12" />
+
+                        <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" RowSpacing="8">
+                            <Label Grid.Row="0" Text="Total"
+                                   TextColor="{StaticResource TextLightColor}" FontSize="13" />
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding TotalDisplay}"
+                                   TextColor="{StaticResource WhiteColor}" FontSize="13" />
+                            <Label Grid.Row="1" Text="Cash Tendered"
+                                   TextColor="{StaticResource TextLightColor}" FontSize="13" />
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding CashTenderedDisplay}"
+                                   TextColor="{StaticResource WhiteColor}" FontSize="13" />
+                        </Grid>
+
+                        <BoxView HeightRequest="1" Color="#2A2A2C" Margin="0,8,0,8" />
+
+                        <Grid ColumnDefinitions="*, Auto">
+                            <Label Text="CHANGE" FontAttributes="Bold" FontSize="15"
+                                   TextColor="{StaticResource WhiteColor}" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding ChangeDisplay}"
+                                   FontSize="24" FontAttributes="Bold"
+                                   TextColor="{StaticResource SuccessColor}" />
+                        </Grid>
+
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

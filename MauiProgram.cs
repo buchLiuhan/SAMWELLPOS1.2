@@ -59,7 +59,8 @@ namespace SAMWELLPOS
             builder.Services.AddTransient<User_ManagementEdit>();
             builder.Services.AddTransient<ProductManagement>();
             builder.Services.AddTransient<Reports>();
-           
+            builder.Services.AddTransient<ReportsViewModel>();
+
             builder.Services.AddTransient<AdminShell>();
             builder.Services.AddTransient<ProductManagementViewModel>();
             builder.Services.AddTransient<ProductManagementCreateViewModel>();
@@ -77,6 +78,16 @@ namespace SAMWELLPOS
             builder.Services.AddTransient<POSPayment>();
             builder.Services.AddTransient<POSReceiptViewModel>();
             builder.Services.AddTransient<POSReceipt>();
+            builder.Services.AddSingleton<SessionService>();
+            builder.Services.AddTransient<POSHistoryViewModel>();
+            builder.Services.AddTransient<POSHistory>();
+            builder.Services.AddTransient<POSHistoryDetailsViewModel>();
+            builder.Services.AddTransient<POSHistoryDetails>();
+
+            builder.Services.AddTransient<AdminHistoryViewModel>();
+            builder.Services.AddTransient<AdminHistory>();
+            builder.Services.AddTransient<AdminHistoryDetailsViewModel>();
+            builder.Services.AddTransient<AdminHistoryDetails>();
 
 
 

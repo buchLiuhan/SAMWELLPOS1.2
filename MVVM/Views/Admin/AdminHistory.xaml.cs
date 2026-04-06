@@ -2,11 +2,11 @@ using SAMWELLPOS.MVVM.ViewModels;
 
 namespace SAMWELLPOS.MVVM.Views.Admin;
 
-public partial class Reports : ContentPage
+public partial class AdminHistory : ContentPage
 {
-    private readonly ReportsViewModel _vm;
+    private readonly AdminHistoryViewModel _vm;
 
-    public Reports(ReportsViewModel vm)
+    public AdminHistory(AdminHistoryViewModel vm)
     {
         InitializeComponent();
         _vm = vm;
@@ -16,6 +16,6 @@ public partial class Reports : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        await _vm.LoadReportsAsync();
+        await _vm.LoadHistoryAsync();
     }
 }

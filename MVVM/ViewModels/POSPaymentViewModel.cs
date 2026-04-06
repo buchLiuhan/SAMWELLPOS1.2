@@ -1,5 +1,4 @@
-﻿
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SAMWELLPOS.MVVM.Models;
 using SAMWELLPOS.Services;
@@ -10,6 +9,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
     {
         private readonly CartService _cart;
         private readonly DatabaseService _db;
+        private readonly SessionService _session;
         private IReadOnlyList<CartItem> _snapshot = new List<CartItem>();
 
         [ObservableProperty]
@@ -33,15 +33,15 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [ObservableProperty]
         private string _errorMessage = string.Empty;
 
-        public POSPaymentViewModel(CartService cart, DatabaseService db)
+        public POSPaymentViewModel(CartService cart, DatabaseService db, SessionService session)
         {
             _cart = cart;
             _db = db;
+            _session = session;
         }
 
         public void LoadTotal()
         {
-            // Snapshot cart items before anything clears them
             _snapshot = _cart.Items.ToList();
             TotalAmount = _cart.TotalAmount;
             TotalDisplay = $"₱{TotalAmount:N2}";
@@ -51,7 +51,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
             HasError = false;
         }
 
-        // Live change calculation as user types
         partial void OnCashTenderedChanged(string value)
         {
             HasError = false;
@@ -78,18 +77,11 @@ namespace SAMWELLPOS.MVVM.ViewModels
             }
         }
 
-        // Quick cash preset buttons
         [RelayCommand]
-        private void SetAmount(string amount)
-        {
-            CashTendered = amount;
-        }
+        private void SetAmount(string amount) => CashTendered = amount;
 
         [RelayCommand]
-        private void SetExactAmount()
-        {
-            CashTendered = TotalAmount.ToString("F2");
-        }
+        private void SetExactAmount() => CashTendered = TotalAmount.ToString("F2");
 
         [RelayCommand]
         private async Task ConfirmPayment()
@@ -119,8 +111,9 @@ namespace SAMWELLPOS.MVVM.ViewModels
             }
 
             decimal change = cash - TotalAmount;
+            string txnNumber = $"TXN-{DateTime.Now:yyyyMMddHHmmss}";
 
-            // Deduct stock from DB
+            // Deduct stock
             foreach (var item in _snapshot)
             {
                 var product = await _db.GetProductById(item.Product.Id);
@@ -128,6 +121,31 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 product.Quantity -= item.Quantity;
                 if (product.Quantity < 0) product.Quantity = 0;
                 await _db.UpdateProduct(product);
+            }
+
+            // Save transaction to DB
+            var transaction = new TransactionModel
+            {
+                TransactionNumber = txnNumber,
+                CashierFullName = _session.CurrentUser?.FullName ?? "Unknown",
+                TotalAmount = TotalAmount,
+                CashTendered = cash,
+                ChangeAmount = change,
+                TransactionDate = DateTime.Now
+            };
+            int txnId = await _db.AddTransaction(transaction);
+
+            // Save transaction items
+            foreach (var item in _snapshot)
+            {
+                await _db.AddTransactionItem(new TransactionItemModel
+                {
+                    TransactionId = txnId,
+                    ProductName = item.Product.Name ?? string.Empty,
+                    Price = item.Product.Price,
+                    Quantity = item.Quantity,
+                    LineTotal = item.LineTotal
+                });
             }
 
             // Clear cart
@@ -139,9 +157,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
         }
 
         [RelayCommand]
-        private async Task GoBack()
-        {
-            await Shell.Current.GoToAsync("..");
-        }
+        private async Task GoBack() => await Shell.Current.GoToAsync("..");
     }
 }

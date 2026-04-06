@@ -3,14 +3,13 @@ using CommunityToolkit.Mvvm.Input;
 using SAMWELLPOS.MVVM.Models;
 using SAMWELLPOS.Services;
 using System.Collections.ObjectModel;
-using SAMWELLPOS.MVVM.Views;
-
 
 namespace SAMWELLPOS.MVVM.ViewModels
 {
     public partial class UserManagementViewModel : ObservableObject
     {
         private readonly DatabaseService _db;
+        private readonly SessionService _session;
         private List<UserModel> _allUsers = new();
 
         [ObservableProperty]
@@ -19,9 +18,10 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [ObservableProperty]
         private string _searchText = string.Empty;
 
-        public UserManagementViewModel(DatabaseService db)
+        public UserManagementViewModel(DatabaseService db, SessionService session)
         {
             _db = db;
+            _session = session;
         }
 
         public async Task LoadUsersAsync()
@@ -34,14 +34,35 @@ namespace SAMWELLPOS.MVVM.ViewModels
 
         private void ApplyFilter()
         {
-            var query = string.IsNullOrWhiteSpace(SearchText)
-                ? _allUsers
-                : _allUsers.Where(u =>
+            var currentId = _session.CurrentUser?.Id ?? -1;
+
+            // Show: current user + cashiers + unapproved
+            // Hide: other admins
+            var query = _allUsers.Where(u =>
+                u.Id == currentId ||           // always show self
+                u.Role != "Admin"              // show cashiers + unapproved
+            );
+
+            if (!string.IsNullOrWhiteSpace(SearchText))
+            {
+                query = query.Where(u =>
                     (u.FullName?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (u.Role?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (u.Email?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ?? false));
+            }
 
-            FilteredUsers = new ObservableCollection<UserModel>(query);
+            // Stamp IsCurrentUser on each
+            var list = query.ToList();
+            foreach (var u in list)
+                u.IsCurrentUser = u.Id == currentId;
+
+            // Sort: current user always first (top-left)
+            var sorted = list
+                .OrderByDescending(u => u.IsCurrentUser)
+                .ThenBy(u => u.FullName)
+                .ToList();
+
+            FilteredUsers = new ObservableCollection<UserModel>(sorted);
         }
 
         [RelayCommand]
@@ -49,6 +70,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
         {
             await Shell.Current.GoToAsync("User_ManagementCreate");
         }
+
         [RelayCommand]
         private async Task NavigateToEdit(int userId)
         {
@@ -66,7 +88,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
 
             if (!confirmed) return;
 
-            // Navigate back to login and clear the back stack
+            _session.Clear();
             App.Current!.MainPage = new AppShell();
         }
     }

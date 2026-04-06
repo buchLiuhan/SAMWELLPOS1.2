@@ -9,25 +9,22 @@
 
     <Grid RowDefinitions="Auto, Auto, *" Padding="16, 24, 16, 0">
 
+        <!-- Logo + Logout -->
         <Grid Grid.Row="0" Margin="0,0,0,24">
-
             <VerticalStackLayout HorizontalOptions="Center">
                 <Image Source="samwelllogo.png" WidthRequest="160" Aspect="AspectFit" />
             </VerticalStackLayout>
-
             <Border Style="{StaticResource CircularIconBorderStyle}"
-            HorizontalOptions="End"
-            VerticalOptions="Center">
+                    HorizontalOptions="End" VerticalOptions="Center">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding LogoutCommand}" />
                 </Border.GestureRecognizers>
                 <Image Source="{StaticResource IconLogout}"
-               WidthRequest="22" HeightRequest="22"
-               HorizontalOptions="Center"
-               VerticalOptions="Center" />
+                       WidthRequest="22" HeightRequest="22"
+                       HorizontalOptions="Center" VerticalOptions="Center" />
             </Border>
-
         </Grid>
+
         <!-- Search + Add -->
         <Grid Grid.Row="1" ColumnDefinitions="*, Auto" ColumnSpacing="12" Margin="0,0,0,20">
             <Border Grid.Column="0" Style="{StaticResource InputContainerStyle}" Padding="16, 4" Margin="0">
@@ -42,17 +39,14 @@
                            VerticalOptions="Center" />
                 </Grid>
             </Border>
-
             <Border Grid.Column="1" Style="{StaticResource PillBorderStyle}"
                     BackgroundColor="{StaticResource LoginColor}" Padding="16, 0">
                 <Border.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding NavigateToCreateCommand}" />
                 </Border.GestureRecognizers>
                 <Label Text="+ Add" Style="{StaticResource PillLabelStyle}"
-           TextColor="{StaticResource WhiteColor}" />
+                       TextColor="{StaticResource WhiteColor}" />
             </Border>
-            
-            
         </Grid>
 
         <!-- User Cards -->
@@ -69,64 +63,135 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:UserModel">
-                    <Border Style="{StaticResource ProductCardStyle}" VerticalOptions="Start" Margin="0,0,0,0">
-                        <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0,8">
+                    <Grid VerticalOptions="Start" Margin="0,0,0,0">
 
-                            <Grid WidthRequest="50" HeightRequest="50" HorizontalOptions="Center">
+                        <!-- Normal card — everyone except current user -->
+                        <Border Style="{StaticResource ProductCardStyle}"
+                                IsVisible="{Binding IsCurrentUser, Converter={StaticResource InverseBoolConverter}}">
+                            <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0,8">
 
-                                <!-- Profile photo -->
-                                <Border WidthRequest="50" HeightRequest="50"
-                                        StrokeShape="RoundRectangle 25"
-                                        StrokeThickness="0"
-                                        BackgroundColor="{Binding AvatarColor}"
-                                        IsVisible="{Binding HasProfilePicture}">
-                                    <Image Source="{Binding ProfilePicturePath}"
-                                           Aspect="AspectFill"
-                                           WidthRequest="50" HeightRequest="50" />
-                                </Border>
+                                <Grid WidthRequest="54" HeightRequest="54" HorizontalOptions="Center">
+                                    <Border WidthRequest="50" HeightRequest="50"
+                                            StrokeShape="RoundRectangle 25" StrokeThickness="0"
+                                            BackgroundColor="{Binding AvatarColor}"
+                                            IsVisible="{Binding HasProfilePicture}">
+                                        <Image Source="{Binding ProfilePicturePath}"
+                                               Aspect="AspectFill"
+                                               WidthRequest="50" HeightRequest="50" />
+                                    </Border>
+                                    <Border WidthRequest="50" HeightRequest="50"
+                                            StrokeShape="RoundRectangle 25" StrokeThickness="0"
+                                            BackgroundColor="{Binding AvatarColor}"
+                                            IsVisible="{Binding HasProfilePicture, Converter={StaticResource InverseBoolConverter}}">
+                                        <Label Text="{Binding Initials}"
+                                               TextColor="{StaticResource WhiteColor}"
+                                               FontSize="18" FontAttributes="Bold"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Border>
+                                </Grid>
 
-                                <!-- Initials fallback -->
-                                <Border WidthRequest="50" HeightRequest="50"
-                                         StrokeShape="RoundRectangle 25"
-                                         StrokeThickness="0"
-                                         BackgroundColor="{Binding AvatarColor}"
-                                         IsVisible="{Binding HasProfilePicture, Converter={StaticResource InverseBoolConverter}}">
-                                    <Label Text="{Binding Initials}"
+                                <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                    <Label Text="{Binding FullName}"
+                                           FontAttributes="Bold" FontSize="14"
                                            TextColor="{StaticResource WhiteColor}"
-                                           FontSize="18" FontAttributes="Bold"
                                            HorizontalOptions="Center"
-                                           VerticalOptions="Center" />
-                                </Border>
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding Role}"
+                                           FontSize="11"
+                                           TextColor="{StaticResource TextLightColor}"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
+                                </VerticalStackLayout>
 
-                            </Grid>
-
-                            <!-- Name + Role -->
-                            <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
-                                <Label Text="{Binding FullName}"
-                                       FontAttributes="Bold" FontSize="14"
-                                       TextColor="{StaticResource WhiteColor}"
+                                <Label Text="Edit Profile"
+                                       TextColor="{StaticResource LoginColor}"
+                                       FontSize="12" FontAttributes="Bold"
                                        HorizontalOptions="Center"
-                                       HorizontalTextAlignment="Center" />
-                                <Label Text="{Binding Role}"
-                                       FontSize="11"
-                                       TextColor="{StaticResource TextLightColor}"
-                                       FontAttributes="Bold"
-                                       HorizontalOptions="Center" />
-                            </VerticalStackLayout>
+                                       Margin="0,4,0,0">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.NavigateToEditCommand}"
+                                            CommandParameter="{Binding Id}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
 
-                            <!-- Edit Link -->
-                            <Label Text="Edit Profile"
-                                   TextColor="{StaticResource LoginColor}"
-                                   FontSize="12" FontAttributes="Bold"
-                                   HorizontalOptions="Center"
-                                   Margin="0,4,0,0">
-                                <Label.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.NavigateToEditCommand}"
-                              CommandParameter="{Binding Id}" />
-                                </Label.GestureRecognizers>
-                            </Label>
-                        </VerticalStackLayout>
-                    </Border>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <!-- Current user card — teal border + green dot -->
+                        <Border StrokeShape="RoundRectangle 16"
+                                StrokeThickness="2"
+                                Stroke="{StaticResource LoginColor}"
+                                Padding="12"
+                                BackgroundColor="#1A1A1A"
+                                IsVisible="{Binding IsCurrentUser}">
+                            <Border.Shadow>
+                                <Shadow Brush="{StaticResource LoginColor}"
+                                        Offset="0,2" Radius="10" Opacity="0.4" />
+                            </Border.Shadow>
+                            <VerticalStackLayout Spacing="12" HorizontalOptions="Center" Padding="0,8">
+
+                                <!-- Avatar + green dot -->
+                                <Grid WidthRequest="54" HeightRequest="54" HorizontalOptions="Center">
+                                    <Border WidthRequest="50" HeightRequest="50"
+                                            StrokeShape="RoundRectangle 25" StrokeThickness="0"
+                                            BackgroundColor="{Binding AvatarColor}"
+                                            IsVisible="{Binding HasProfilePicture}">
+                                        <Image Source="{Binding ProfilePicturePath}"
+                                               Aspect="AspectFill"
+                                               WidthRequest="50" HeightRequest="50" />
+                                    </Border>
+                                    <Border WidthRequest="50" HeightRequest="50"
+                                            StrokeShape="RoundRectangle 25" StrokeThickness="0"
+                                            BackgroundColor="{Binding AvatarColor}"
+                                            IsVisible="{Binding HasProfilePicture, Converter={StaticResource InverseBoolConverter}}">
+                                        <Label Text="{Binding Initials}"
+                                               TextColor="{StaticResource WhiteColor}"
+                                               FontSize="18" FontAttributes="Bold"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center" />
+                                    </Border>
+
+                                    <!-- Green dot -->
+                                    <Border WidthRequest="14" HeightRequest="14"
+                                            StrokeShape="RoundRectangle 7"
+                                            StrokeThickness="2"
+                                            Stroke="{StaticResource AppBackgroundColor}"
+                                            BackgroundColor="{StaticResource SuccessColor}"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Start" />
+                                </Grid>
+
+                                <VerticalStackLayout Spacing="2" HorizontalOptions="Center">
+                                    <Label Text="{Binding FullName}"
+                                           FontAttributes="Bold" FontSize="14"
+                                           TextColor="{StaticResource WhiteColor}"
+                                           HorizontalOptions="Center"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="{Binding Role}"
+                                           FontSize="11"
+                                           TextColor="{StaticResource TextLightColor}"
+                                           FontAttributes="Bold"
+                                           HorizontalOptions="Center" />
+                                </VerticalStackLayout>
+
+                                <Label Text="Edit Profile"
+                                       TextColor="{StaticResource LoginColor}"
+                                       FontSize="12" FontAttributes="Bold"
+                                       HorizontalOptions="Center"
+                                       Margin="0,4,0,0">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.NavigateToEditCommand}"
+                                            CommandParameter="{Binding Id}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+
+                            </VerticalStackLayout>
+                        </Border>
+
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
 

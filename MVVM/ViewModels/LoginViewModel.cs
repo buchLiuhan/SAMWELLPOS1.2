@@ -8,6 +8,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
     public partial class LoginViewModel : ObservableObject
     {
         private readonly DatabaseService _dbService;
+        private readonly SessionService _session;
 
         [ObservableProperty]
         private string? _username;
@@ -21,9 +22,10 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [ObservableProperty]
         private bool _hasError = false;
 
-        public LoginViewModel(DatabaseService dbService)
+        public LoginViewModel(DatabaseService dbService, SessionService session)
         {
             _dbService = dbService;
+            _session = session;
         }
 
         [RelayCommand]
@@ -32,7 +34,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
             HasError = false;
             ErrorMessage = string.Empty;
 
-            // Field-specific validation
             if (string.IsNullOrWhiteSpace(Username) && string.IsNullOrWhiteSpace(Password))
             {
                 ErrorMessage = "Please enter your username and password.";
@@ -56,7 +57,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
 
             var user = await _dbService.GetUserByUsername(Username.Trim());
 
-            // User not found
             if (user is null)
             {
                 ErrorMessage = "No account found with that username. Please check and try again.";
@@ -64,7 +64,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 return;
             }
 
-            // Wrong password
             if (user.Password != Password)
             {
                 ErrorMessage = "Incorrect password. Please try again.";
@@ -72,7 +71,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 return;
             }
 
-            // Account not approved
             if (!user.IsApproved)
             {
                 ErrorMessage = user.Role == "Admin"
@@ -82,8 +80,9 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 return;
             }
 
-            // Success — route by role
-            HasError = false;
+            // ✅ Store session
+            _session.SetCurrentUser(user);
+
             if (user.Role == "Admin")
             {
                 var adminShell = IPlatformApplication.Current!.Services

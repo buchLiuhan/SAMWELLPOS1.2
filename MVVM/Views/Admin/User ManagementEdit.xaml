@@ -17,11 +17,8 @@
 
                     <!-- Avatar -->
                     <Grid HorizontalOptions="Center" Margin="0,10,0,20">
-
-                        <!-- Profile photo (if set) -->
                         <Border WidthRequest="120" HeightRequest="120"
-                                StrokeShape="RoundRectangle 60"
-                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 60" StrokeThickness="0"
                                 BackgroundColor="{StaticResource LoginColor}"
                                 IsVisible="{Binding HasProfilePicture}">
                             <Image Source="{Binding ProfilePicturePath}"
@@ -32,23 +29,19 @@
                             </Border.GestureRecognizers>
                         </Border>
 
-                        <!-- Initials fallback (if no photo) -->
                         <Border WidthRequest="120" HeightRequest="120"
-                                StrokeShape="RoundRectangle 60"
-                                StrokeThickness="0"
+                                StrokeShape="RoundRectangle 60" StrokeThickness="0"
                                 BackgroundColor="{StaticResource LoginColor}"
                                 IsVisible="{Binding HasProfilePicture, Converter={StaticResource InverseBoolConverter}}">
                             <Label Text="{Binding Initials}"
                                    TextColor="{StaticResource WhiteColor}"
                                    FontSize="40" FontAttributes="Bold"
-                                   HorizontalOptions="Center"
-                                   VerticalOptions="Center" />
+                                   HorizontalOptions="Center" VerticalOptions="Center" />
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer Command="{Binding PickPhotoCommand}" />
                             </Border.GestureRecognizers>
                         </Border>
 
-                        <!-- Edit pill -->
                         <Border Margin="0,0,0,-8" VerticalOptions="End" HorizontalOptions="Center"
                                 Style="{StaticResource PillBorderStyle}"
                                 BackgroundColor="#D91c1c1c" Padding="12,6">
@@ -103,19 +96,53 @@
                                 OnColor="{StaticResource LoginColor}" />
                     </Grid>
 
-                    <!-- Error Message -->
-                    <Label Text="{Binding ErrorMessage}"
-                           TextColor="{StaticResource ErrorColor}"
-                           FontSize="13" HorizontalOptions="Center"
-                           IsVisible="{Binding HasError}" />
+                    <!-- Divider -->
+                    <BoxView HeightRequest="1" Color="#2A2A2C" Margin="0,8,0,8" />
 
-                    <!-- Save Button -->
+                    <!-- Password Section -->
+                    <Label Text="CHANGE PASSWORD" Style="{StaticResource InputLabelStyle}" />
+                    <Label Text="Leave blank to keep the current password."
+                           FontSize="11" TextColor="{StaticResource TextLightColor}"
+                           Margin="4,0,0,0" />
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="NEW PASSWORD" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="••••••••"
+                                   IsPassword="True"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Text="{Binding NewPassword}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="CONFIRM NEW PASSWORD" Style="{StaticResource InputLabelStyle}" />
+                        <Border Style="{StaticResource InputContainerStyle}">
+                            <Entry Placeholder="••••••••"
+                                   IsPassword="True"
+                                   Style="{StaticResource InputEntryStyle}"
+                                   Text="{Binding ConfirmNewPassword}" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Error -->
+                    <Border BackgroundColor="{StaticResource MutedError2}"
+                            StrokeShape="RoundRectangle 10"
+                            StrokeThickness="0"
+                            Padding="14,10"
+                            IsVisible="{Binding HasError}">
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="{StaticResource WhiteColor}"
+                               FontSize="13" LineBreakMode="WordWrap" />
+                    </Border>
+
+                    <!-- Save -->
                     <Button Text="Save Changes"
                             Style="{StaticResource PrimaryButtonStyle}"
                             Command="{Binding SaveChangesCommand}"
                             Margin="0,20,0,0" />
 
-                    <!-- Delete Button -->
+                    <!-- Delete -->
                     <Button Text="Delete User"
                             Style="{StaticResource ErrorButtonStyle}"
                             Command="{Binding DeleteUserCommand}"

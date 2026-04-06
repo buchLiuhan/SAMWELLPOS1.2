@@ -63,7 +63,9 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [RelayCommand]
         private async Task NewTransaction()
         {
-            await Shell.Current.Navigation.PopToRootAsync();
+                await Shell.Current.Navigation.PopAsync(); // Receipt → Payment
+                await Shell.Current.Navigation.PopAsync(); // Payment → Cart  
+                await Shell.Current.Navigation.PopAsync(); // Cart → Dashboard
         }
     }
 }

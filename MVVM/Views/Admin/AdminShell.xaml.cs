@@ -14,5 +14,7 @@ public partial class AdminShell : Shell
         Routing.RegisterRoute("ProductManagementCreate", typeof(ProductManagementCreate));   // ← add
         Routing.RegisterRoute("ProductManagementEdit", typeof(ProductManagementEdit));       // ← add
         Routing.RegisterRoute("ProductManagementDetails", typeof(ProductManagementDetails)); // ← add
+        Routing.RegisterRoute("AdminHistory", typeof(SAMWELLPOS.MVVM.Views.Admin.AdminHistory));
+        Routing.RegisterRoute("AdminHistoryDetails", typeof(SAMWELLPOS.MVVM.Views.Admin.AdminHistoryDetails));
     }
 }

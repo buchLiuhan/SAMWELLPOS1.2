@@ -142,6 +142,7 @@
     <FileImageSource x:Key="IconUsers" File="usericon.png" />
     <FileImageSource x:Key="IconProducts" File="product.png" />
     <FileImageSource x:Key="IconReports" File="reports.png" />
+    <FileImageSource x:Key="IconHistory" File="historyicon.png" />
 
     <Style x:Key="CircularIconBorderStyle" TargetType="Border">
         <Setter Property="WidthRequest" Value="44" />

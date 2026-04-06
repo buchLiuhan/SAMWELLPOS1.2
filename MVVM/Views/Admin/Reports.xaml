@@ -1,12 +1,240 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SAMWELLPOS.MVVM.Models"
+             xmlns:vm="clr-namespace:SAMWELLPOS.MVVM.ViewModels"
              x:Class="SAMWELLPOS.MVVM.Views.Admin.Reports"
-             Title="Reports">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Reports"
+             BackgroundColor="{StaticResource AppBackgroundColor}">
+
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <VerticalStackLayout Spacing="20" Padding="16,24,16,24">
+
+            <!-- Header -->
+            <VerticalStackLayout HorizontalOptions="Center" Margin="0,0,0,8">
+                <Image Source="samwelllogo.png" WidthRequest="140" Aspect="AspectFit"
+                       HorizontalOptions="Center" />
+                <Label Text="BUSINESS REPORTS"
+                       CharacterSpacing="2" FontSize="11" FontAttributes="Bold"
+                       TextColor="{StaticResource TextLightColor}"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- History Button -->
+            <Border BackgroundColor="{StaticResource InputBackgroundColor}"
+        StrokeShape="RoundRectangle 12"
+        StrokeThickness="0" Padding="16,14">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoToHistoryCommand}" />
+                </Border.GestureRecognizers>
+                <Grid ColumnDefinitions="Auto, *, Auto">
+                    <Image Grid.Column="0" Source="{StaticResource IconHistory}"
+               WidthRequest="20" HeightRequest="20"
+               VerticalOptions="Center" Margin="0,0,12,0" />
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                        <Label Text="Transaction History"
+                   FontAttributes="Bold" FontSize="14"
+                   TextColor="{StaticResource WhiteColor}" />
+                        <Label Text="View all sales records"
+                   FontSize="12" TextColor="{StaticResource TextLightColor}" />
+                    </VerticalStackLayout>
+                    <Label Grid.Column="2" Text="→"
+               FontSize="18" FontAttributes="Bold"
+               TextColor="{StaticResource LoginColor}"
+               VerticalOptions="Center" />
+                </Grid>
+            </Border>
+
+            <!-- TODAY SUMMARY -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="TODAY" Style="{StaticResource InputLabelStyle}" />
+
+                <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
+
+                    <Border Grid.Column="0" BackgroundColor="#1A1A1A"
+                            StrokeShape="RoundRectangle 14" StrokeThickness="0" Padding="14,14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="REVENUE" Style="{StaticResource InputLabelStyle}" />
+                            <Label Text="{Binding TodayRevenue}"
+                                   FontAttributes="Bold" FontSize="15"
+                                   TextColor="{StaticResource LoginColor}"
+                                   LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="1" BackgroundColor="#1A1A1A"
+                            StrokeShape="RoundRectangle 14" StrokeThickness="0" Padding="14,14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="SALES" Style="{StaticResource InputLabelStyle}" />
+                            <Label Text="{Binding TodayTransactionCount}"
+                                   FontAttributes="Bold" FontSize="22"
+                                   TextColor="{StaticResource WhiteColor}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="2" BackgroundColor="#1A1A1A"
+                            StrokeShape="RoundRectangle 14" StrokeThickness="0" Padding="14,14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="ITEMS" Style="{StaticResource InputLabelStyle}" />
+                            <Label Text="{Binding TodayItemsSold}"
+                                   FontAttributes="Bold" FontSize="22"
+                                   TextColor="{StaticResource WhiteColor}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- THIS MONTH SUMMARY -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="THIS MONTH" Style="{StaticResource InputLabelStyle}" />
+
+                <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
+
+                    <Border Grid.Column="0" BackgroundColor="#1A1A1A"
+                            StrokeShape="RoundRectangle 14" StrokeThickness="0" Padding="14,14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="REVENUE" Style="{StaticResource InputLabelStyle}" />
+                            <Label Text="{Binding MonthRevenue}"
+                                   FontAttributes="Bold" FontSize="15"
+                                   TextColor="{StaticResource SuccessColor}"
+                                   LineBreakMode="TailTruncation" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="1" BackgroundColor="#1A1A1A"
+                            StrokeShape="RoundRectangle 14" StrokeThickness="0" Padding="14,14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="SALES" Style="{StaticResource InputLabelStyle}" />
+                            <Label Text="{Binding MonthTransactionCount}"
+                                   FontAttributes="Bold" FontSize="22"
+                                   TextColor="{StaticResource WhiteColor}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="2" BackgroundColor="#1A1A1A"
+                            StrokeShape="RoundRectangle 14" StrokeThickness="0" Padding="14,14">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="ITEMS" Style="{StaticResource InputLabelStyle}" />
+                            <Label Text="{Binding MonthItemsSold}"
+                                   FontAttributes="Bold" FontSize="22"
+                                   TextColor="{StaticResource WhiteColor}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- TOP 3 PRODUCTS -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="TOP PRODUCTS" Style="{StaticResource InputLabelStyle}" />
+
+                <Border BackgroundColor="#1A1A1A"
+                        StrokeShape="RoundRectangle 14"
+                        StrokeThickness="0" Padding="16">
+                    <CollectionView ItemsSource="{Binding TopProducts}"
+                                    VerticalScrollBarVisibility="Never">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid ColumnDefinitions="Auto, *, Auto" Margin="0,0,0,12">
+                                    <Label Grid.Column="0"
+                                           Text="{Binding RankDisplay}"
+                                           FontSize="22"
+                                           VerticalOptions="Center"
+                                           Margin="0,0,12,0" />
+                                    <Label Grid.Column="1"
+                                           Text="{Binding ProductName}"
+                                           FontAttributes="Bold" FontSize="14"
+                                           TextColor="{StaticResource WhiteColor}"
+                                           VerticalOptions="Center"
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="1" />
+                                    <Border Grid.Column="2"
+                                            BackgroundColor="{StaticResource InputBackgroundColor}"
+                                            StrokeShape="RoundRectangle 8"
+                                            StrokeThickness="0"
+                                            Padding="10,4"
+                                            VerticalOptions="Center">
+                                        <Label Text="{Binding SoldDisplay}"
+                                               FontSize="11" FontAttributes="Bold"
+                                               TextColor="{StaticResource TextLightColor}" />
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                        <CollectionView.EmptyView>
+                            <Label Text="No sales data yet."
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   HorizontalOptions="Center"
+                                   Margin="0,8,0,8" />
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- RECENT TRANSACTIONS -->
+            <VerticalStackLayout Spacing="8">
+                <Label Text="RECENT TRANSACTIONS" Style="{StaticResource InputLabelStyle}" />
+
+                <CollectionView ItemsSource="{Binding RecentTransactions}"
+                                VerticalScrollBarVisibility="Never">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:TransactionModel">
+                            <Border Style="{StaticResource ProductCardStyle}"
+                                    Padding="12" Margin="0,0,0,10">
+                                <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12">
+
+                                    <Border Grid.Column="0" WidthRequest="44" HeightRequest="44"
+                                            StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                                            BackgroundColor="{StaticResource LoginColor}">
+                                        <Label Text="₱" FontSize="18" FontAttributes="Bold"
+                                               TextColor="{StaticResource WhiteColor}"
+                                               HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Border>
+
+                                    <VerticalStackLayout Grid.Column="1"
+                                                         VerticalOptions="Center" Spacing="2">
+                                        <Label Text="{Binding TransactionNumber}"
+                                               FontAttributes="Bold" FontSize="12"
+                                               TextColor="{StaticResource WhiteColor}"
+                                               LineBreakMode="TailTruncation" MaxLines="1" />
+                                        <Label Text="{Binding CashierFullName}"
+                                               FontSize="11"
+                                               TextColor="{StaticResource TextLightColor}" />
+                                        <Label Text="{Binding DateDisplay}"
+                                               FontSize="11"
+                                               TextColor="{StaticResource TextLightColor}" />
+                                    </VerticalStackLayout>
+
+                                    <Label Grid.Column="2"
+                                           Text="{Binding TotalDisplay}"
+                                           FontAttributes="Bold" FontSize="14"
+                                           TextColor="{StaticResource SuccessColor}"
+                                           VerticalOptions="Center" />
+
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="8" Margin="0,20,0,0">
+                            <Label Text="🧾" FontSize="40" HorizontalOptions="Center" />
+                            <Label Text="No transactions yet"
+                                   FontSize="13"
+                                   TextColor="{StaticResource TextLightColor}"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

@@ -2,19 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using SAMWELLPOS.MVVM.Models;
 using SAMWELLPOS.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace SAMWELLPOS.MVVM.ViewModels
 {
-    [QueryProperty(nameof(UserId), "UserId")]  // receives the ID from navigation
+    [QueryProperty(nameof(UserId), "UserId")]
     public partial class UserManagementEditViewModel : ObservableObject
     {
         private readonly DatabaseService _db;
+        private readonly SessionService _session;
         private UserModel? _originalUser;
 
         [ObservableProperty]
@@ -47,14 +42,20 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [ObservableProperty]
         private bool _hasError = false;
 
+        [ObservableProperty]
+        private string _newPassword = string.Empty;
+
+        [ObservableProperty]
+        private string _confirmNewPassword = string.Empty;
+
         public List<string> Roles { get; } = new() { "Admin", "Cashier" };
 
-        public UserManagementEditViewModel(DatabaseService db)
+        public UserManagementEditViewModel(DatabaseService db, SessionService session)
         {
             _db = db;
+            _session = session;
         }
 
-        // Called automatically when UserId is set via QueryProperty
         partial void OnUserIdChanged(int value) => _ = LoadUserAsync(value);
 
         private async Task LoadUserAsync(int id)
@@ -111,6 +112,23 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 return;
             }
 
+            if (!string.IsNullOrWhiteSpace(NewPassword) || !string.IsNullOrWhiteSpace(ConfirmNewPassword))
+            {
+                if (NewPassword.Length < 6)
+                {
+                    ErrorMessage = "New password must be at least 6 characters.";
+                    HasError = true;
+                    return;
+                }
+
+                if (NewPassword != ConfirmNewPassword)
+                {
+                    ErrorMessage = "Passwords do not match. Please check and try again.";
+                    HasError = true;
+                    return;
+                }
+            }
+
             if (_originalUser is null) return;
 
             _originalUser.FullName = FullName.Trim();
@@ -119,6 +137,9 @@ namespace SAMWELLPOS.MVVM.ViewModels
             _originalUser.IsApproved = IsApproved;
             _originalUser.ProfilePicturePath = ProfilePicturePath;
 
+            if (!string.IsNullOrWhiteSpace(NewPassword))
+                _originalUser.Password = NewPassword;
+
             await _db.UpdateUser(_originalUser);
             await Shell.Current.GoToAsync("..");
         }
@@ -126,14 +147,32 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [RelayCommand]
         private async Task DeleteUser()
         {
+            if (_session.IsCurrentUser(_originalUser!.Id))
+            {
+                await Shell.Current.DisplayAlert(
+                    "Cannot Delete",
+                    "You cannot delete your own account.",
+                    "OK");
+                return;
+            }
+
+            var allUsers = await _db.GetUsers();
+            int adminCount = allUsers.Count(u => u.Role == "Admin");
+            if (adminCount <= 1 && _originalUser.Role == "Admin")
+            {
+                await Shell.Current.DisplayAlert(
+                    "Cannot Delete",
+                    "This is the last admin account. The system must always have at least one admin.",
+                    "OK");
+                return;
+            }
+
             bool confirmed = await Shell.Current.DisplayAlert(
                 "Delete User",
                 $"Are you sure you want to delete {FullName}? This cannot be undone.",
-                "Delete",
-                "Cancel");
+                "Delete", "Cancel");
 
             if (!confirmed) return;
-
             if (_originalUser is null) return;
 
             await _db.DeleteUser(_originalUser);

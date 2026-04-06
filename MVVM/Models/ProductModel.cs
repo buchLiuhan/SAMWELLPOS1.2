@@ -49,5 +49,24 @@ namespace SAMWELLPOS.MVVM.Models
 
         [Ignore]
         public string CartQuantityDisplay => CartQuantity.ToString();
+
+
+
+
+        [Ignore]
+        public string CartQuantityInput
+        {
+            get => CartQuantity.ToString();
+            set
+            {
+                // Handled by ViewModel
+            }
+        }
+
+
+
+
+
     }
+
 }

@@ -29,6 +29,8 @@ namespace SAMWELLPOS.Services
 
             await _db.CreateTableAsync<UserModel>();
             await _db.CreateTableAsync<ProductModel>(); // ← add this line here
+            await _db.CreateTableAsync<TransactionModel>();      // ← add
+            await _db.CreateTableAsync<TransactionItemModel>();  // ← add
         }
 
         // --- USER OPERATIONS ---
@@ -108,6 +110,44 @@ namespace SAMWELLPOS.Services
             await Init();
             return await _db!.DeleteAsync(product);
         }
+
+        public async Task<int> AddTransaction(TransactionModel transaction)
+        {
+            await Init();
+            await _db!.InsertAsync(transaction);
+            return transaction.Id;
+        }
+
+        public async Task<List<TransactionModel>> GetTransactions()
+        {
+            await Init();
+            return await _db!.Table<TransactionModel>()
+                .OrderByDescending(t => t.TransactionDate)
+                .ToListAsync();
+        }
+
+        public async Task<TransactionModel?> GetTransactionById(int id)
+        {
+            await Init();
+            return await _db!.Table<TransactionModel>()
+                .Where(t => t.Id == id)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task AddTransactionItem(TransactionItemModel item)
+        {
+            await Init();
+            await _db!.InsertAsync(item);
+        }
+
+        public async Task<List<TransactionItemModel>> GetTransactionItems(int transactionId)
+        {
+            await Init();
+            return await _db!.Table<TransactionItemModel>()
+                .Where(i => i.TransactionId == transactionId)
+                .ToListAsync();
+        }
+
     }
 }
 

@@ -56,6 +56,9 @@ namespace SAMWELLPOS.MVVM.Models
         [Ignore]
         public bool HasProfilePicture => !string.IsNullOrEmpty(ProfilePicturePath);
 
+        [Ignore]
+        public bool IsCurrentUser { get; set; } = false;
+
     }
 
 

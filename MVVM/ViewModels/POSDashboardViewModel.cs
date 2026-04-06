@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using SAMWELLPOS.MVVM.Models;
 using SAMWELLPOS.Services;
@@ -15,6 +10,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
     {
         private readonly DatabaseService _db;
         private readonly CartService _cart;
+        private readonly SessionService _session;
         private List<ProductModel> _allProducts = new();
 
         [ObservableProperty]
@@ -29,31 +25,44 @@ namespace SAMWELLPOS.MVVM.ViewModels
         [ObservableProperty]
         private string _selectedCategory = "All";
 
+        // Cashier info
+        public string CashierFullName => _session.CurrentUser?.FullName ?? "Cashier";
+        public string? CashierProfilePicturePath => _session.CurrentUser?.ProfilePicturePath;
+        public bool CashierHasPhoto => !string.IsNullOrEmpty(_session.CurrentUser?.ProfilePicturePath);
+        public string CashierInitials
+        {
+            get
+            {
+                var name = _session.CurrentUser?.FullName;
+                if (string.IsNullOrWhiteSpace(name)) return "?";
+                var parts = name.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                return parts.Length >= 2
+                    ? $"{parts[0][0]}{parts[1][0]}".ToUpper()
+                    : parts[0][0].ToString().ToUpper();
+            }
+        }
+
         public List<string> Categories { get; private set; } = new();
 
-        public POSDashboardViewModel(DatabaseService db, CartService cart)
+        public POSDashboardViewModel(DatabaseService db, CartService cart, SessionService session)
         {
             _db = db;
             _cart = cart;
-
-            // Subscribe to cart changes to update badge
+            _session = session;
             _cart.CartChanged += OnCartChanged;
         }
 
         private void OnCartChanged()
         {
             CartCount = _cart.TotalItemCount;
-            // Refresh to update stepper quantities on cards
             ApplyFilter();
         }
 
         public async Task LoadProductsAsync()
         {
-            // Only load in-stock products for cashier
             var all = await _db.GetProducts();
             _allProducts = all.Where(p => p.Quantity > 0).ToList();
 
-            // Build category list dynamically from products
             var cats = _allProducts
                 .Where(p => !string.IsNullOrWhiteSpace(p.Category))
                 .Select(p => p.Category!)
@@ -63,7 +72,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
 
             Categories = new List<string> { "All" }.Concat(cats).ToList();
             OnPropertyChanged(nameof(Categories));
-
             ApplyFilter();
         }
 
@@ -82,7 +90,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
                     (p.Name?.Contains(SearchText, StringComparison.OrdinalIgnoreCase) ?? false) ||
                     (p.Id.ToString().Contains(SearchText)));
 
-            // Stamp cart quantities onto each product for the stepper display
             var list = query.ToList();
             foreach (var p in list)
                 p.CartQuantity = _cart.GetQuantity(p);
@@ -90,24 +97,20 @@ namespace SAMWELLPOS.MVVM.ViewModels
             FilteredProducts = new ObservableCollection<ProductModel>(list);
         }
 
-        // Called by + button on each card
         [RelayCommand]
         private void Increment(ProductModel product)
         {
-            // Don't exceed available stock
             int inCart = _cart.GetQuantity(product);
             if (inCart >= product.Quantity) return;
             _cart.AddOrIncrement(product);
         }
 
-        // Called by - button on each card
         [RelayCommand]
         private void Decrement(ProductModel product)
         {
             _cart.Decrement(product);
         }
 
-        // Returns cart quantity for a product — used by card display
         public int GetCartQuantity(ProductModel product)
             => _cart.GetQuantity(product);
 
@@ -118,6 +121,12 @@ namespace SAMWELLPOS.MVVM.ViewModels
         }
 
         [RelayCommand]
+        private async Task GoToHistory()
+        {
+            await Shell.Current.GoToAsync("POSHistory");
+        }
+
+        [RelayCommand]
         private async Task Logout()
         {
             bool confirmed = await Shell.Current.DisplayAlert(
@@ -125,8 +134,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
             if (!confirmed) return;
 
             _cart.Clear();
-
-            _cart.Clear();
+            _session.Clear();
             App.Current!.MainPage = new AppShell();
         }
 
@@ -135,5 +143,39 @@ namespace SAMWELLPOS.MVVM.ViewModels
         {
             SelectedCategory = category;
         }
+
+        [RelayCommand]
+        private async Task PromptQuantity(ProductModel product)
+        {
+            string? result = await Shell.Current.DisplayPromptAsync(
+                "Set Quantity",
+                $"{product.Name} (Max: {product.Quantity})",
+                accept: "Set",
+                cancel: "Cancel",
+                placeholder: "Enter quantity",
+                maxLength: 4,
+                keyboard: Keyboard.Numeric,
+                initialValue: _cart.GetQuantity(product).ToString());
+
+            if (result is null) return;
+            if (!int.TryParse(result, out int qty) || qty < 0) return;
+
+            qty = Math.Min(qty, product.Quantity); // cap at available stock
+
+            int current = _cart.GetQuantity(product);
+            int diff = qty - current;
+
+            if (diff > 0)
+                for (int i = 0; i < diff; i++) _cart.AddOrIncrement(product);
+            else if (diff < 0)
+                for (int i = 0; i < Math.Abs(diff); i++) _cart.Decrement(product);
+        }
+
+
+
+
+
+
+
     }
 }

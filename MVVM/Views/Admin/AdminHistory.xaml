@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:SAMWELLPOS.MVVM.Models"
+             x:Class="SAMWELLPOS.MVVM.Views.Admin.AdminHistory"
+             BackgroundColor="{StaticResource AppBackgroundColor}"
+             Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, Auto, *" Padding="16,24,16,0">
+
+        <!-- Header -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto, *" ColumnSpacing="12" Margin="0,0,0,20">
+            <Border Grid.Column="0" Style="{StaticResource CircularIconBorderStyle}">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoBackCommand}" />
+                </Border.GestureRecognizers>
+                <Label Text="←" FontSize="20"
+                       HorizontalOptions="Center" VerticalOptions="Center"
+                       TextColor="{StaticResource WhiteColor}" />
+            </Border>
+            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                <Label Text="TRANSACTION HISTORY" CharacterSpacing="1"
+                       FontSize="11" TextColor="{StaticResource TextLightColor}" />
+                <Label Text="All Sales Records" FontAttributes="Bold" FontSize="16"
+                       TextColor="{StaticResource WhiteColor}" />
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Search -->
+        <Border Grid.Row="1" Style="{StaticResource InputContainerStyle}"
+                Padding="16,4" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="*, Auto">
+                <Entry Grid.Column="0"
+                       Placeholder="Search by transaction ID or cashier..."
+                       Style="{StaticResource InputEntryStyle}"
+                       Text="{Binding SearchText}" />
+                <Image Grid.Column="1" Source="{StaticResource IconSearch}"
+                       WidthRequest="22" HeightRequest="22" VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- Transaction List -->
+        <CollectionView Grid.Row="2"
+                        ItemsSource="{Binding FilteredTransactions}"
+                        VerticalScrollBarVisibility="Never">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:TransactionModel">
+                    <Border Style="{StaticResource ProductCardStyle}" Padding="12" Margin="0,0,0,10">
+                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="12">
+
+                            <Border Grid.Column="0" WidthRequest="48" HeightRequest="48"
+                                    StrokeShape="RoundRectangle 10" StrokeThickness="0"
+                                    BackgroundColor="{StaticResource LoginColor}">
+                                <Label Text="₱" FontSize="20" FontAttributes="Bold"
+                                       TextColor="{StaticResource WhiteColor}"
+                                       HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="{Binding TransactionNumber}"
+                                       FontAttributes="Bold" FontSize="13"
+                                       TextColor="{StaticResource WhiteColor}"
+                                       LineBreakMode="TailTruncation" MaxLines="1" />
+                                <Label Text="{Binding CashierFullName}"
+                                       FontSize="11" TextColor="{StaticResource TextLightColor}" />
+                                <Label Text="{Binding DateDisplay}"
+                                       FontSize="11" TextColor="{StaticResource TextLightColor}" />
+                                <Label Text="{Binding TotalDisplay}"
+                                       FontSize="13" FontAttributes="Bold"
+                                       TextColor="{StaticResource LoginColor}" />
+                            </VerticalStackLayout>
+
+                            <Border Grid.Column="2"
+                                    BackgroundColor="{StaticResource SecondaryColor}"
+                                    StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="0" Padding="10,8"
+                                    VerticalOptions="Center">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type CollectionView}}, Path=BindingContext.NavigateToDetailsCommand}"
+                                        CommandParameter="{Binding Id}" />
+                                </Border.GestureRecognizers>
+                                <Label Text="Details" FontSize="11" FontAttributes="Bold"
+                                       TextColor="{StaticResource WhiteColor}"
+                                       HorizontalOptions="Center" />
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+            <CollectionView.Footer>
+                <BoxView HeightRequest="24" Color="Transparent" />
+            </CollectionView.Footer>
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout HorizontalOptions="Center" Margin="0,60,0,0" Spacing="8">
+                    <Label Text="🧾" FontSize="48" HorizontalOptions="Center" />
+                    <Label Text="No transactions yet"
+                           FontAttributes="Bold" FontSize="15"
+                           TextColor="{StaticResource WhiteColor}"
+                           HorizontalOptions="Center" />
+                    <Label Text="Completed sales will appear here"
+                           FontSize="13" TextColor="{StaticResource TextLightColor}"
+                           HorizontalOptions="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

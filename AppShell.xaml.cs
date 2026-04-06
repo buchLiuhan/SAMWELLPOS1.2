@@ -17,6 +17,8 @@
             Routing.RegisterRoute("POSCart", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSCart));
             Routing.RegisterRoute("POSPayment", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSPayment));
             Routing.RegisterRoute("POSReceipt", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSReceipt));
+            Routing.RegisterRoute("POSHistory", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSHistory));
+            Routing.RegisterRoute("POSHistoryDetails", typeof(SAMWELLPOS.MVVM.Views.User123.Dashboard.POSHistoryDetails));
         }
     }
 }

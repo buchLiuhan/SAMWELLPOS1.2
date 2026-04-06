@@ -9,12 +9,11 @@ namespace SAMWELLPOS.MVVM.ViewModels
     {
         private readonly DatabaseService _db;
 
+        [ObservableProperty]
+        private string _fullName = string.Empty;
 
         [ObservableProperty]
         private string _username = string.Empty;
-
-        [ObservableProperty]
-        private string _fullName = string.Empty;
 
         [ObservableProperty]
         private string _email = string.Empty;
@@ -63,7 +62,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 return;
             }
 
-            // Check duplicate username
             var existingUsername = await _db.GetUserByUsername(Username.Trim());
             if (existingUsername is not null)
             {
@@ -72,13 +70,36 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 return;
             }
 
-            // Check duplicate email
             var existingEmail = await _db.GetUserByEmail(Email.Trim());
             if (existingEmail is not null)
             {
                 ErrorMessage = "An account with that email already exists.";
                 HasError = true;
                 return;
+            }
+
+            var allUsers = await _db.GetUsers();
+
+            if (SelectedRole == "Admin")
+            {
+                int adminCount = allUsers.Count(u => u.Role == "Admin");
+                if (adminCount >= 3)
+                {
+                    ErrorMessage = "The system is limited to 3 admin accounts.";
+                    HasError = true;
+                    return;
+                }
+            }
+
+            if (SelectedRole == "Cashier")
+            {
+                int cashierCount = allUsers.Count(u => u.Role == "Cashier");
+                if (cashierCount >= 5)
+                {
+                    ErrorMessage = "The system is limited to 5 cashier accounts. Remove an existing cashier before adding a new one.";
+                    HasError = true;
+                    return;
+                }
             }
 
             var newUser = new UserModel
@@ -114,7 +135,6 @@ namespace SAMWELLPOS.MVVM.ViewModels
 
                 if (result is null) return;
 
-                // Copy to app's local storage so the path persists
                 var localPath = Path.Combine(FileSystem.AppDataDirectory, $"profile_{Guid.NewGuid()}.jpg");
                 using var stream = await result.OpenReadAsync();
                 using var fileStream = File.OpenWrite(localPath);
@@ -123,7 +143,7 @@ namespace SAMWELLPOS.MVVM.ViewModels
                 ProfilePicturePath = localPath;
                 HasProfilePicture = true;
             }
-            catch (Exception ex)
+            catch
             {
                 ErrorMessage = "Could not load photo. Try again.";
                 HasError = true;
